@@ -1,0 +1,146 @@
+﻿@model SIA_Portal.Models.AdminModels.AdminHomePageModel
+@using SIA_Portal.Constants;
+@using SIA_Portal.Models.ObjectRepresentations;
+@using CommonDatabaseActionReusables.AnnouncementManager;
+@using SIA_Portal.Models.EmployeeModel;
+@using SIA_Portal.Utilities.DomIdentifier;
+@using SIA_Portal.Controllers;
+@{
+    ViewBag.Title = "Admin_HomePage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+<head>
+    <link href="~/Res/Css/dashboard.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+
+    <style type="text/css">
+
+        .fakeLink {
+            border: 0px;
+            background-color: transparent;
+            color: blue;
+            cursor: pointer;
+        }
+
+        .fakelink:hover {
+            text-decoration: underline;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+    </style>
+</head>
+
+<main>
+    @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__HOME_PAGE__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME))
+    {
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Admin Actions</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+        <div class="row">
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">Employee Accounts</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <!--<a class="small text-white stretched-link" href="#">Manage Accounts</a>-->
+                        @Html.ActionLink("Manage Accounts", ActionNameConstants.ADMIN_SIDE__MANAGE_EMPLOYEE_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-warning text-white mb-4">
+                    <div class="card-body">Admin Accounts</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
+                        @Html.ActionLink("Manage Accounts", ActionNameConstants.ADMIN_SIDE__MANAGE_ADMIN_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">Announcements</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
+                        @Html.ActionLink("Manage Announcements", ActionNameConstants.ADMIN_SIDE__MANAGE_ANNOUNCEMENT_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <!--
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-danger text-white mb-4">
+            <div class="card-body">Employee Records</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="#">View Details</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    -->
+
+
+            <fieldset class="announcement-content">
+                <center>Announcement Board</center>
+                <br><br>
+
+                @foreach (Announcement ann in Model.EntitiesInPage)
+                {
+                    <center>
+                        <div class="announce-content1">
+                            <!--<label for="title">Announcement Title: ann.Title</label>-->
+                            <button type="submit" name="executeAction" class="fakeLink" value="@DomIdentifier.GenerateDomIdentifierAsString(AdminController.DOM_IDENTIFIER_TYPE_SINGLE_ANNOUNCEMENT, ann.Id.ToString())">@ann.Title</button>
+                            <br>
+                            <label for="title">Preview of Content: </label>
+                            <p>
+                                @EmployeeHomePageModel.GetAnnouncementPreview(ann)
+                            </p>
+
+                            <label for="title">Post Date/Time: @ann.DateTimeLastModified</label>
+                        </div>
+                    </center>
+                    <br />
+                }
+
+
+                <div class="pagination">
+
+                    @foreach (int i in (Model.GetPageIndicesToDisplayBasedOnCurrentPageIndex()))
+                    {
+                        <button type="submit" name="executeAction" value="@DomIdentifier.GenerateDomIdentifierAsString(AdminController.DOM_IDENFIFIER_TYPE_ANNOUNCEMENT_PAGE_IN_INDEX, i.ToString())">@i</button>
+                    }
+
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+    }
+</main>
+
+<footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Copyright &copy; TeleCare 2021</div>
+            <div>
+                <a href="#">Privacy Policy</a>
+                &middot;
+                <a href="#">Terms &amp; Conditions</a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,121 @@
+﻿@model SIA_Portal.Models.EmployeeModel.EmployeeHomePageModel
+@using SIA_Portal.Constants;
+@using SIA_Portal.Models.ObjectRepresentations;
+@using CommonDatabaseActionReusables.AnnouncementManager;
+@using SIA_Portal.Models.EmployeeModel;
+@using SIA_Portal.Constants;
+@using SIA_Portal.Utilities.DomIdentifier;
+@using SIA_Portal.Controllers;
+@{
+    ViewBag.Title = "Employee_HomePage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+<head>
+    <link href="~/Res/Css/dashboard.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+
+    <style type="text/css">
+
+        .fakeLink {
+            border: 0px;
+            background-color: transparent;
+            color: white;
+            cursor: pointer;
+        }
+
+            .fakelink:hover {
+                text-decoration: underline;
+            }
+
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+
+
+        .fakeLinkBlue {
+            border: 0px;
+            background-color: transparent;
+            color: blue;
+            cursor: pointer;
+        }
+
+            .fakeLinkBlue:hover {
+                text-decoration: underline;
+            }
+
+    </style>
+</head>
+
+
+<main>
+    @using (Html.BeginForm(ActionNameConstants.EMPLOYEE_SIDE__HOME_PAGE__EXECUTE_ACTION, ControllerNameConstants.EMPLOYEE_CONTROLLER_NAME))
+    {
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Employee Actions</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">Personal Record</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
+                            <button type="submit" name="executeAction" value="GoToEmployeeRecord" class="fakeLink small text-white stretched-link">Edit Record</button>
+                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <fieldset class="announcement-content">
+                    <center>Announcement Board</center>
+                    <br><br>
+
+                    @foreach (Announcement ann in Model.EntitiesInPage)
+                    {
+                        <center>
+                            <div class="announce-content1">
+                                <button type="submit" name="executeAction" class="fakeLinkBlue" value="@DomIdentifier.GenerateDomIdentifierAsString(AdminController.DOM_IDENTIFIER_TYPE_SINGLE_ANNOUNCEMENT, ann.Id.ToString())">@ann.Title</button>
+                                <br>
+                                <label for="title">Preview of Content: </label>
+                                <p>
+                                    @EmployeeHomePageModel.GetAnnouncementPreview(ann);
+                                </p>
+
+                                <label for="title">Post Date/Time: @ann.DateTimeLastModified</label>
+                            </div>
+                        </center>
+                        <br />
+                    }
+
+
+                    <div class="pagination">
+
+                        @foreach (int i in (Model.GetPageIndicesToDisplayBasedOnCurrentPageIndex()))
+                        {
+                            <button type="submit" name="executeAction" value="@DomIdentifier.GenerateDomIdentifierAsString(AdminController.DOM_IDENFIFIER_TYPE_ANNOUNCEMENT_PAGE_IN_INDEX, i.ToString())">@i</button>
+                        }
+
+                    </div>
+
+                </fieldset>
+
+
+            </div>
+        </div>
+    }
+</main>
+

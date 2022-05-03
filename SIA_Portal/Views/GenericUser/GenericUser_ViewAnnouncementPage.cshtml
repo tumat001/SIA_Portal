@@ -1,0 +1,70 @@
+﻿@model SIA_Portal.Models.GenericUserModel.ViewAnnouncementModel
+@{
+    ViewBag.Title = "GenericUser_ViewAnnouncementPage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .maincontainer {
+        border: 2px solid black;
+        text-align: center;
+        margin: 2%;
+        padding: 1%;
+        height: 80%;
+    }
+
+        .maincontainer p {
+            padding: 1%;
+        }
+
+        .maincontainer img {
+            padding: 0.5%;
+        }
+</style>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Announcement: @Model.AnnouncementTitle</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+          crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <br />
+
+    <div class="maincontainer">
+        @Html.HiddenFor(m => m.AnnouncementId)
+
+        @if (Model.AnnouncementTitle != null)
+        {
+            <h1>@Model.AnnouncementTitle</h1>
+        }
+
+        @if (Model.AnnouncementImagePathOrContent != null)
+        {
+            <img src="@Url.Content(Model.AnnouncementImagePathOrContent)" alt="announcement image" />
+        }
+
+        @if (Model.AnnouncementContent != null)
+        {
+            <p>
+                @Model.AnnouncementContent
+            </p>
+        }
+    </div>
+</body>

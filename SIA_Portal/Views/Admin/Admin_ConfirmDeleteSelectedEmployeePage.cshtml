@@ -1,0 +1,105 @@
+﻿@model SIA_Portal.Models.AdminModels.ConfirmDeleteEmployeeAccountModel
+@using SIA_Portal.Constants;
+@{
+    ViewBag.Title = "Admin_ConfirmDeleteSelectedEmployeePage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_account_style.css" />
+    <title>Delete Selected Employees</title>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+    </style>
+</head>
+
+
+<body>
+    @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__DELETE_SELECTED_EMPLOYEE_ACCOUNT_PAGE__EXECUTE_ACTION, "Admin"))
+    {
+
+        <center>
+            <div class="section-2">
+                <center>
+
+                    <br>
+                    <p> Delete Admin Accounts?</p>
+                    <br>
+
+                    <div>
+                        <button type="submit" name="executeAction" value="ConfirmDelete">Confirm</button>
+
+                        <button type="submit" name="executeAction" value="CancelDelete">Cancel</button>
+                    </div>
+                    <br />
+
+                    <table style="width:95%">
+
+                        <tr>
+                            <th>Username</th>
+                        </tr>
+
+
+                        @for (var i = 0; i < Model.EntityRepresentationsInPage.Count; i++)
+                        {
+
+
+                            var isRepresentationOfSelf = Model.EntityRepresentationsInPage[i].Username.Equals(Model.LoggedInAccount.Username);
+                            object htmlobj = null;
+                            if (isRepresentationOfSelf)
+                            {
+                                htmlobj = new { @disabled = "disabled" };
+                            }
+                            else
+                            {
+                                htmlobj = new { };
+                            }
+
+                            <tr>
+                                @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].Id)
+                                <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].Username)</td>
+                                @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].DisabledFromLogIn)
+                                @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].IsSelected)
+                            </tr>
+                        }
+                    </table>
+
+                    <br />
+                    <div class="pagination">
+
+                        @foreach (int i in (Model.GetPageIndicesToDisplayBasedOnCurrentPageIndex()))
+                        {
+                            <button type="submit" name="executeAction" value="@i">@i</button>
+                        }
+
+                    </div>
+
+
+                </center>
+            </div>
+        </center>
+    }
+</body>

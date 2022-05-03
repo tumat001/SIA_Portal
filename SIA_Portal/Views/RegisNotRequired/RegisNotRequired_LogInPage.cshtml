@@ -1,0 +1,70 @@
+﻿@model SIA_Portal.Models.RegisNotRequired.RegisNotRequired_LogInModel
+@using SIA_Portal.Constants;
+@{
+    ViewBag.Title = "RegisNotRequired_LogInPage";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="~/Res/Css/tele.css" />
+</head>
+
+
+<body>
+
+    @using (Html.BeginForm(ActionNameConstants.REGIS_NOT_REQUIRED__LOG_IN_PAGE__EXECUTE_ACTION, ControllerNameConstants.REGIS_NOT_REQUIRED_CONTROLLER_NAME))
+    {
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div class="login">
+        <center>
+            <img src="~/Res/Images/telecare.png" alt="Tele">
+
+            <br><br><br>
+            @Html.ValidationMessageFor(m => m.InputUsername, "", new { @class = "text-danger", @style = "color:darkred" })
+            @Html.TextBoxFor(m => m.InputUsername, new { @placeholder = "Username", @class = "textNameInput" })
+
+            <br><br><br>
+            @Html.ValidationMessageFor(m => m.InputPassword, "", new { @class = "text-danger", @style = "color:darkred" })
+            @Html.PasswordFor(m => m.InputPassword, new { @placeholder = "Password", @class = "inputPassword" })
+
+            <br /><br />
+            @{
+
+                bool toShow = false;
+                string colorToUse = "";
+
+                if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_FAILED)
+                {
+                    toShow = true;
+                }
+                else if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_SUCCESS)
+                {
+                    toShow = true;
+                }
+                colorToUse = ActionStatusConstants.GetColorAsStringAssociatedWithStatus(Model.ActionExecuteStatus);
+
+                if (toShow)
+                {
+                    <center>
+                        <p style="@colorToUse">@Model.StatusMessage</p>
+                    </center>
+                }
+            }
+
+            <br><br>
+            <input type="submit" name="executeAction" value="Login" style="text-align: center" class="reg loginButton">
+
+
+        </center>
+    </div>
+    }
+
+</body>
+</html>
+

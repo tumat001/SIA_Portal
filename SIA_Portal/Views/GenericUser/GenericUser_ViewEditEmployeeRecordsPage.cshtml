@@ -1,0 +1,259 @@
+﻿@model SIA_Portal.Models.GenericUserModel.ViewEditEmployeeRecordModel
+@using SIA_Portal.Constants;
+@{
+    ViewBag.Title = "GenericUser_ViewEditEmployeeRecordsPage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_styles.css" />
+    <title>Employee Records</title>
+</head>
+
+<body>
+    <main>
+        <div class="section-1">
+            @using (Html.BeginForm(ActionNameConstants.GENERIC_SIDE__VIEW_EDIT_EMPLOYEE_RECORD__EXECUTE_ACTION, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME))
+            {
+            <div class="form-wrapper">
+                @{
+                    bool isEditing = Model.EmployeeId.Equals(Model.LoggedInAccount.Id);
+
+                    object createText_htmlObj = null;
+                    object createSelect_htmlObj = null;
+
+                    if (isEditing)
+                    {
+                        createText_htmlObj = new { @class = "createtext" };
+                    }
+                    else
+                    {
+                        createText_htmlObj = new { @class = "createtext", @readonly = "readonly" };
+                    }
+
+                    if (isEditing)
+                    {
+                        createSelect_htmlObj = new { @class = "createselect" };
+                    }
+                    else
+                    {
+                        createSelect_htmlObj = new { @class = "createselect", @disabled = "true" };
+                    }
+
+                }
+
+                @Html.HiddenFor(m => m.EmployeeId)
+
+                @Html.HiddenFor(m => m.RecordId)
+
+                @Html.HiddenFor(m => m.EmployeeUsername)
+
+                <center>
+                    <h2>Employee Record of:</h2>
+                    @if (Model.EmployeeUsername != null)
+                    {
+                        <h3>@Model.EmployeeUsername</h3>
+                    }
+                </center>
+
+                <fieldset class="announcement-content">
+                    <legend>Personal Information</legend>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>First Name</label>
+                        <!--<input type="text" name="firstname" placeholder="First Name" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.FirstName, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "text-danger" })
+
+                    </div>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Middle Name</label>
+                        <!--<input type="text" name="midname" placeholder="Middle Name" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.MiddleName, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.MiddleName, null, new { @class = "text-danger" })
+
+                        <br>
+                    </div>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Last Name</label>
+                        <!--<input type="text" name="lastname" placeholder="Last Name" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.LastName, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "text-danger" })
+
+                        <br>
+                    </div>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Birthday</label>
+                        <!--<input type="date" name="Birthday" id="Birthday" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.Birthday, "{0:yyyy-MM-dd}", new { @class = "form-control createtext", type = "date" })
+                        @Html.ValidationMessageFor(m => m.Birthday, null, new { @class = "text-danger" })
+                        <br>
+                    </div>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Address</label>
+                        <!--<input type="textarea" name="address" placeholder="Enter your address" required class="createtext"><br>-->
+                        @Html.TextAreaFor(m => m.Address, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.Address, null, new { @class = "text-danger" })
+
+                        <br>
+                    </div>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Contact Number</label>
+                        <!--<input type="text-box" name="conno" placeholder="Enter a mobile number" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.ContactNumber, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.ContactNumber, null, new { @class = "text-danger" })
+
+                        <br>
+                    </div>
+
+                </fieldset>
+
+                <fieldset class="announcement-content">
+                    <legend>Education</legend>
+                    <div class="text-content-wrapper-no-min-height">
+                        <p>Elementary School</p>
+                        <!--<input type="text" name="elmschool" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.ElementarySchool, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.ElementarySchool, null, new { @class = "text-danger" })
+
+                        <p>High School</p>
+                        <!--<input type="text" name="hsschool" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.HighSchool, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.HighSchool, null, new { @class = "text-danger" })
+
+                        <p>College</p>
+                        <!--<input type="text" name="college" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.College, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.College, null, new { @class = "text-danger" })
+                    </div>
+                </fieldset>
+
+                <fieldset class="announcement-content">
+                    <legend>Experiences</legend>
+                    <div class="text-content-wrapper-no-min-height">
+                        <p>Previous Company Name</p>
+                        <!--<input type="text" name="prevcom" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.PreviousCompanyName, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.PreviousCompanyName, null, new { @class = "text-danger" })
+
+                        <p>Position</p>
+                        <!--<input type="text" name="pos" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.PreviousCompanyPositionName, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.PreviousCompanyPositionName, null, new { @class = "text-danger" })
+                    </div>
+                </fieldset>
+
+                <fieldset class="announcement-content">
+                    <legend>Seminar Attended</legend>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Seminar Title </label>
+                        <!--<input type="text" name="semti" placeholder="Seminar Title" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.SeminarNameAttended, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.SeminarNameAttended, null, new { @class = "text-danger" })
+                    </div>
+                </fieldset>
+
+                <fieldset class="announcement-content">
+                    <legend>Job Information</legend>
+                    <div class="text-content-wrapper-no-min-height">
+                        <label>Job description</label>
+                        <br>
+                        <br>
+                        <!--
+            <select name="category" id="category" class="createselect">
+                <option value="Agent">Agent</option>
+                <option value="Team Leader">Team Leader</option>
+                <option value="Quality Analyst">Quality Analyst</option>
+                <option value="Workforce">Workforce</option>
+                <option value="Operation Manager">Operation Manager</option>
+            </select>
+                -->
+                        @Html.DropDownListFor(m => m.EmployeeDivCategoryNameSelected, new SelectList(Model.EmployeeDivCategoryList), createSelect_htmlObj)
+                        @Html.ValidationMessageFor(m => m.EmployeeDivCategoryNameSelected, null, new { @class = "text-danger" })
+                        <br>
+                    </div>
+                </fieldset>
+
+                <fieldset class="announcement-content">
+                    <legend>Emergency Information</legend>
+                    <div class="text-content-wrapper-no-min-height">
+                        <p>Name </p>
+                        <!--<input type="text" name="semti" placeholder="Please enter a contact person" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.EmergencyContactName, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.EmergencyContactName, null, new { @class = "text-danger" })
+
+                        <p>Contact Number</p>
+                        <!--<input type="text-box" name="emeconno" placeholder="Enter a mobile number of a contact person" required class="createtext"><br>-->
+                        @Html.TextBoxFor(m => m.EmergencyContactNumber, createText_htmlObj)
+                        @Html.ValidationMessageFor(m => m.EmergencyContactNumber, null, new { @class = "text-danger" })
+                        <br>
+                    </div>
+                </fieldset>
+
+                <!--
+    <fieldset class="announcement-content">
+        <legend>Awards/Certificates</legend>
+        <div class="text-content-wrapper-no-min-height">
+            <label>Upload your files here</label>
+            <input type="file" name="semti" required class="createtext"><br>
+        </div>
+    </fieldset>
+        -->
+                @Html.ValidationSummary()
+
+
+                @if (isEditing)
+                {
+
+                    bool toShow = false;
+                    string colorToUse = "";
+
+                    if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_FAILED)
+                    {
+                        toShow = true;
+                        //colorToUse = "color:darkred";
+                    }
+                    else if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_SUCCESS)
+                    {
+                        toShow = true;
+                        //colorToUse = "color:green";
+                    }
+                    colorToUse = ActionStatusConstants.GetColorAsStringAssociatedWithStatus(Model.ActionExecuteStatus);
+
+                    if (toShow)
+                    {
+
+                        <center>
+                            <p style="@colorToUse">@Model.StatusMessage</p>
+                        </center>
+                        <br />
+                    }
+
+
+                    <div class="button-wrapper">
+                        <center>
+                            <button type="submit" name="executeAction" value="submitResponse">Submit</button>
+                        </center>
+                    </div>
+
+                }
+
+                <br />
+                <br />
+            </div>
+            }
+        </div>
+    </main>
+</body>
+

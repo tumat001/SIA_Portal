@@ -1,0 +1,67 @@
+﻿@model SIA_Portal.Models.RegisNotRequired.RegisNotRequired_RegisterModel
+@using SIA_Portal.Constants;
+
+@{
+    ViewBag.Title = "RegisNotRequired_RegisterPage";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telecare Login</title>
+    <link rel="stylesheet" type="text/css" href="~/Res/Css/tele.css" />
+</head>
+<body>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="login">
+
+        <img src="~/Res/Images/telecare.png" alt="Tele">
+        @using (Html.BeginForm(ActionNameConstants.REGIS_NOT_REQUIRED__REGISTER_PAGE__EXECUTE_ACTION, ControllerNameConstants.REGIS_NOT_REQUIRED_CONTROLLER_NAME))
+        {
+            <br><br><br>
+            <!--<input type="text" name="fname" id="Uname" placeholder="First Name">-->
+            @Html.TextBoxFor(m => m.InputFirstName, new { @placeholder = "First Name", @class = "textNameInput" })
+            <br><br><br>
+
+            <!--<input type="text" name="lname" id="Uname" placeholder="Last Name">-->
+            @Html.TextBoxFor(m => m.InputLastName, new { @placeholder = "Last Name", @class = "textNameInput" })
+            <br><br><br>
+
+            <!--
+        <select name="category" id="category" class="createselect">
+            <option value="SelectCat">-- Select Category --</option>
+            <option value="Agent">Agent</option>
+            <option value="Team Leader">Team Leader</option>
+            <option value="Quality Analyst">Quality Analyst</option>
+            <option value="Workforce">Workforce</option>
+            <option value="Operation Manager">Operation Manager</option>
+        </select>
+            -->
+
+            <br><br><br>
+            <!--<input type="text" name="Uname" id="Uname" placeholder="Username">-->
+            @Html.TextBoxFor(m => m.InputUsername, new { @placeholder = "Username", @class = "textNameInput" })
+
+            <br><br><br>
+            <!--<input type="Password" name="Pass" id="Pass" placeholder="Password">-->
+            @Html.TextBoxFor(m => m.InputPassword, new { @placeholder = "Password", @class = "inputPassword" })
+
+            <br><br><br>
+            <!--<input type="Password" name="conPass" id="Pass" placeholder="Confirm Password">-->
+            @Html.TextBoxFor(m => m.InputConfirmPassword, new { @placeholder = "Confirm Password", @class = "inputPassword" })
+
+            <br><br><br>
+
+            <input type="submit" name="executeAction" id="reg" value="Register" style="text-align: center" class="">
+            <br><br>
+            <center><a> Click here to log-in </a> </center>
+            <br>
+        }
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+﻿@model SIA_Portal.Models.AdminModels.CreateEditAdminAccountModel
+@using SIA_Portal.Constants;
+@{
+    ViewBag.Title = "Admin_CreateEditAdminAccountPage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_account_style.css" />
+    <title>@Model.GetHeaderToDisplay()</title>
+
+    <script src="//code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#AddCatToCurrCats').click(function () {
+                $("#CategoryNameList > option:selected").each(function () {
+                    $(this).appendTo("#InputCategoryNameList");
+                });
+            });
+
+            $('#DeleteCatFromCurrCats').click(function () {
+                $("#InputCategoryNameList > option:selected").each(function () {
+                    $(this).remove().appendTo("#CategoryNameList");
+                });
+
+
+                $("#InputCategoryNameList option").prop("selected", true);
+            });
+        })
+    </script>
+</head>
+
+
+
+<main>
+    <div>
+        <!--class="section-1"-->
+        @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__CREATE_EDIT_ADMIN_ACCOUNT_PAGE__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME))
+        {
+            @Html.HiddenFor(m => m.AccountType)
+            @Html.HiddenFor(m => m.AccountId)
+
+        <div class="form-wrapper">
+            <p>@Model.GetHeaderToDisplay()</p>
+            <fieldset class="announcement-content">
+                <legend>Account General Config</legend>
+                <div class="text-content-wrapper">
+                    <p>Username</p>
+
+                    @{
+                        object usernameHtmlAttr = null;
+
+                        if (Model.IsActionEditAccount())
+                        {
+                            usernameHtmlAttr = new { @placeholder = "Username", autocomplete = "off", @style = "width: 300px", @readonly = "readonly" };
+                        }
+                        else
+                        {
+                            usernameHtmlAttr = new { @placeholder = "Username", autocomplete = "off", @style = "width: 300px" };
+                        }
+                    }
+
+                    @Html.TextBoxFor(m => m.InputUsername, usernameHtmlAttr)
+                    <br />
+                    @Html.ValidationMessageFor(m => m.InputUsername, "", new { @class = "text-danger", @style = "color:darkred" })
+
+                    <center>
+                        <label>Disable From Log In</label> @Html.CheckBoxFor(m => m.InputDisabledFromLogIn)
+                    </center>
+                </div>
+
+            </fieldset>
+
+
+            <fieldset class="announcement-content">
+                <legend>Account Division</legend>
+                <div class="text-content-wrapper">
+                    <div class="col-4">
+                        <div class="row">
+                            <p>Available Categories:</p>
+                            @Html.ListBoxFor(m => m.CategoryNameList, new SelectList(Model.CategoryNameList), new { @id = "CategoryNameList" })
+
+                            <br /><br />
+                            <button type="button" name="executeCategoryAction" id="AddCatToCurrCats" value="AddCatToCurrCats">Add Selected Category</button>
+
+                        </div>
+                    </div>
+                    <br /><br /><br />
+                    <div class="col-4">
+                        <div class="row">
+                            <p>Current Categories:</p>
+                            @Html.ListBoxFor(m => m.InputCategoryNameList, new SelectList(Model.InputCategoryNameList), new { @id = "InputCategoryNameList" })
+
+                            <br /><br />
+                            <button type="button" name="executeCategoryAction" id="DeleteCatFromCurrCats" value="DeleteCatFromCurrCats">Remove Selected Category</button>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="announcement-content">
+                <legend>Account Password</legend>
+                <div class="text-content-wrapper">
+
+                    <p>Password</p>
+                    @Html.PasswordFor(m => m.InputPassword, new { @placeholder = "Password" })
+
+                    <p>Confirm Password</p>
+                    @Html.PasswordFor(m => m.InputConfirmPassword, new { @placeholder = "Confirm Password" })
+
+                    <br />
+                    @if (Model.IsActionEditAccount())
+                    {
+                        <center>
+                            <label>No Change on Password</label> @Html.CheckBoxFor(m => m.InputNoChangeOnPassword)
+                        </center>
+                        <br />
+                    }
+
+                    <center>
+                        <label>Generate Random Password Instead</label> @Html.CheckBoxFor(m => m.InputGenerateRandomPasswordInstead)
+                    </center>
+                    <br />
+
+                </div>
+            </fieldset>
+
+            <br />
+            <div>
+                <br />
+                <br />
+                <br />
+                <br />
+                @{
+
+                    bool toShow = false;
+                    string colorToUse = "";
+
+                    if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_FAILED)
+                    {
+                        toShow = true;
+                        //colorToUse = "color:darkred";
+                    }
+                    else if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_SUCCESS)
+                    {
+                        toShow = true;
+                        //colorToUse = "color:green";
+                    }
+                    colorToUse = ActionStatusConstants.GetColorAsStringAssociatedWithStatus(Model.ActionExecuteStatus);
+
+                    if (toShow)
+                    {
+                        <center>
+                            <p style="@colorToUse">@Model.StatusMessage</p>
+                        </center>
+                    }
+
+                }
+
+                <center class="button-wrapper">
+                    <button type="submit" name="executeAction" value="createAccount">@Model.GetButtonTextDisplay()</button>
+                </center>
+            </div>
+        </div>
+        }
+    </div>
+</main>

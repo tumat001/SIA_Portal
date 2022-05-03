@@ -1,0 +1,132 @@
+﻿@model SIA_Portal.Models.AdminModels.ManageAdminAccountsModel
+@using SIA_Portal.Constants
+@using SIA_Portal.Models.ObjectRepresentations
+@using SIA_Portal.Models.AdminModels
+@{
+    ViewBag.Title = "Admin_ManageAdminAccountsPage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_account_style.css" />
+    <title>Manage Admin Accounts</title>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__MANAGE_ADMIN_PAGE__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME))
+        {
+            Html.HiddenFor(m => Model.AdGetParam);
+            Html.HiddenFor(m => Model.AdGetParam.Fetch);
+            Html.HiddenFor(m => Model.AdGetParam.Offset);
+
+            Html.HiddenFor(m => Model.AdGetParam.TextToContain);
+            Html.HiddenFor(m => Model.CurrentPageIndex);
+            for (int i = 0; i < Model.AdGetParam.OrderByParameters.Count; i += 1)
+            {
+                Html.HiddenFor(m => Model.AdGetParam.OrderByParameters[i]);
+            }
+            <button type="submit" hidden="hidden" name="executeAction" value="TextFilterSubmit"></button>
+
+
+            <center>
+                <div class="section-1">
+
+                    <p> Actions </p>
+                    <br>
+                    <center>
+                        <button type="submit" name="executeAction" value="CreateAction" class="btn">Create New Account</button>
+                        <button type="submit" name="executeAction" value="DeleteAction" class="btn"> Delete Selected Accounts</button>
+                        <button type="submit" name="executeAction" value="EditAction" class="btn">Edit Selected Account</button>
+
+                    </center>
+                </div>
+            </center>
+
+            <center>
+                <div class="section-2">
+                    <center>
+                        <div class="right-aligned-container">
+                            <label>Account Username filter: </label> @Html.TextBoxFor(m => m.AccountUsernameFilter, new { autocomplete = "off" })
+                        </div>
+
+
+                        <br>
+                        <p> Admin Accounts </p>
+                        <br>
+
+
+                        <table style="width:95%">
+
+                            <tr>
+                                <th>Username</th>
+                                <th>Disabled Login</th>
+                                <th>Select</th>
+                            </tr>
+
+
+                            @for (var i = 0; i < Model.EntityRepresentationsInPage.Count; i++)
+                            {
+
+
+                                var isRepresentationOfSelf = Model.EntityRepresentationsInPage[i].Username.Equals(Model.LoggedInAccount.Username);
+                                object htmlobj = null;
+                                if (isRepresentationOfSelf)
+                                {
+                                    htmlobj = new { @disabled = "disabled" };
+                                }
+                                else
+                                {
+                                    htmlobj = new { };
+                                }
+
+                                <tr>
+                                    @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].Id)
+                                    <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].Username)</td>
+                                    <td>@Html.CheckBoxFor(m => Model.EntityRepresentationsInPage[i].DisabledFromLogIn, new { @disabled = "disabled" }) </td>
+                                    <td>@Html.CheckBoxFor(m => Model.EntityRepresentationsInPage[i].IsSelected, htmlobj)</td>
+                                </tr>
+                            }
+                        </table>
+
+
+                        <div class="pagination">
+
+                            @foreach (int i in (Model.GetPageIndicesToDisplayBasedOnCurrentPageIndex()))
+                            {
+                                <button type="submit" name="executeAction" value="@i">@i</button>
+                            }
+
+                        </div>
+                    </center>
+                </div>
+            </center>
+        }
+    </main>
+</body>

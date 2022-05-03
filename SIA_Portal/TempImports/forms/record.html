@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<!-- Google Fonts CDN -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="styles.css" />
+		<title>Employee Record Form</title>
+	</head>
+	<body>
+		<div class="navbar">
+			<ul class="links">
+				<li class="link"><a href="#">Home</a></li>
+				<li class="link"><a href="#">Account</a></li>
+				<li class="link"><a href="#">Logout</a></li>
+			</ul>
+		</div>
+		<main>
+			<div class="title">
+				<p>Welcome!</p>
+			</div>
+			<div class="section-1">
+				<form class="form">
+					<div class="form-wrapper">
+						<p>Employee Record</p>
+						<fieldset class="announcement-content">
+							<legend>Personal Information</legend>
+							<div class="text-content-wrapper">
+								<label>First Name</label>
+								<input type="text" name="firstname" placeholder="First Name" required class="createtext"><br>
+                                   
+                            </div>   
+                            <div class="text-content-wrapper">
+								<label>Middle Name</label>
+								<input type="text" name="midname" placeholder="Middle Name" required class="createtext"><br>
+                                <br>   
+                            </div>   
+                            <div class="text-content-wrapper">
+								<label>Last Name</label>
+								<input type="text" name="lastname" placeholder="Last Name" required class="createtext"><br>
+                                <br>   
+                            </div>  
+                            <div class="text-content-wrapper">
+								<label>Birthday</label>
+								<input type="date" name="bday" required class="createtext"><br>
+                                <br>   
+                            </div> 
+                            <div class="text-content-wrapper">
+								<label>Address</label>
+								<input type="textarea" name="address" placeholder="Enter your address" required class="createtext"><br>
+                                <br>   
+                            </div> 
+                            <div class="text-content-wrapper">
+								<label>Contact Number</label>
+								<input type="text-box" name="conno" placeholder="Enter a mobile number" required class="createtext"><br>
+                                <br>   
+                            </div> 
+                   
+                        <div class="text-content-wrapper">
+                        <label>Job description</label>
+		                <br>
+		                 <br>
+		                <select name="category" id="category" class="createselect" >
+			            <option value="Agent">Agent</option>
+			            <option value="Team Leader">Team Leader</option>
+			            <option value="Quality Analyst">Quality Analyst</option>
+			            <option value="Workforce">Workforce</option>
+			            <option value="Operation Manager">Operation Manager</option>
+		                </select>
+		                <br>
+		                <br>
+                        </div>
+						</fieldset>
+                
+                        <fieldset class="announcement-content">
+							<legend>Education</legend>
+							<div class="text-content-wrapper">
+								<label>Elementary School</label>
+								<input type="text" name="elmschool"  required class="createtext"><br>      
+								<label>High School</label>
+								<input type="text" name="hsschool"  required class="createtext"><br>      
+								<label>College</label>
+								<input type="text" name="college"  required class="createtext"><br>      
+                            </div>   
+						</fieldset>
+
+                        <fieldset class="announcement-content">
+							<legend>Experiences</legend>
+							<div class="text-content-wrapper">
+								<label>Previous Company Name</label>
+								<input type="text" name="prevcom" required class="createtext"><br>  
+								<label>Position</label>
+								<input type="text" name="pos" required class="createtext"><br>  								
+                            </div>   
+						</fieldset>
+
+                        <fieldset class="announcement-content">
+							<legend>Seminar Attended</legend>
+							<div class="text-content-wrapper">
+								<label>Seminar Title </label>
+								<input type="text" name="semti" placeholder="Seminar Title" required class="createtext"><br>      
+                            </div>   
+						</fieldset>
+
+                        <fieldset class="announcement-content">
+							<legend>Job Information</legend>
+							<div class="text-content-wrapper">
+								<label>Job description</label>
+		                <br>
+		                 <br>
+		                <select name="category" id="category" class="createselect" >
+			            <option value="Agent">Agent</option>
+			            <option value="Team Leader">Team Leader</option>
+			            <option value="Quality Analyst">Quality Analyst</option>
+			            <option value="Workforce">Workforce</option>
+			            <option value="Operation Manager">Operation Manager</option>
+		                </select>     
+                        <br> 
+                            </div>   
+						</fieldset>
+
+                        <fieldset class="announcement-content">
+							<legend>Emergency Information</legend>
+							<div class="text-content-wrapper">
+								<label>Name </label>
+								<input type="text" name="semti" placeholder="Please enter a contact person" required class="createtext"><br>      
+								<label>Contact Number</label>
+								<input type="text-box" name="emeconno" placeholder="Enter a mobile number of a contact person" required class="createtext"><br>
+                                <br>   
+                            </div>   
+						</fieldset>
+
+                        <fieldset class="announcement-content">
+							<legend>Awards/Certificates</legend>
+							<div class="text-content-wrapper">
+								<label>Upload your files here</label>
+                                <input type="file" name="semti" required class="createtext"><br>
+                            </div>   
+						</fieldset>
+
+						<div class="button-wrapper">
+							<button>Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</main>
+	</body>
+</html>
