@@ -13,37 +13,53 @@ namespace SIA_Portal.Models.BaseModels
     public class BaseAccountLoggedInModel
     {
 
-        public Account LoggedInAccount { set; get; }
+        public Account _loggedInAccount;
+        public Account LoggedInAccount 
+        { 
+            set
+            {
+                _loggedInAccount = value;
 
-        public ISet<int> PermissionIds { set; get; }
+                var permList = new List<Permission>();
 
-        public IReadOnlyList<Permission> Permissions { set; get; }
+                if (LoggedInAccount != null)
+                {
 
+                    AccountPermissionIds = new PortalAccountToPermissionsAccessor().EntityToCategoryDatabaseManagerHelper.TryAdvancedGetRelationsOfPrimaryAsSet(_loggedInAccount.Id, new AdvancedGetParameters());
+
+                    var permAccessor = new PortalPermissionAccessor();
+
+                    foreach (int id in AccountPermissionIds)
+                    {
+                        var perm = permAccessor.PermissionDatabaseManagerHelper.TryGetPermissionInfoFromId(id);
+
+                        if (perm != null)
+                        {
+                            permList.Add(perm);
+                        }
+                    }
+
+                }
+
+                AccountPermissions = permList;
+            }
+            get
+            {
+                return _loggedInAccount;
+            } 
+        }
+
+
+        public ISet<int> AccountPermissionIds { set; get; }
+
+        public IReadOnlyList<Permission> AccountPermissions { set; get; }
+
+
+        //
 
         public BaseAccountLoggedInModel(Account loggedInAccount)
         {
             LoggedInAccount = loggedInAccount;
-            var permList = new List<Permission>();
-
-            if (LoggedInAccount != null) {
-
-                PermissionIds = new PortalAccountToPermissionsAccessor().EntityToCategoryDatabaseManagerHelper.AdvancedGetRelationsOfPrimaryAsSet(loggedInAccount.Id, new AdvancedGetParameters());
-                
-                var permAccessor = new PortalPermissionAccessor();
-
-                foreach (int id in PermissionIds)
-                {
-                    var perm = permAccessor.PermissionDatabaseManagerHelper.TryGetPermissionInfoFromId(id);
-
-                    if (perm != null)
-                    {
-                        permList.Add(perm);
-                    }
-                } 
-
-            }
-
-            Permissions = permList;
         }
 
         public BaseAccountLoggedInModel(object loggedInAccount) : this((Account) loggedInAccount) { }
@@ -55,7 +71,7 @@ namespace SIA_Portal.Models.BaseModels
 
         public bool IfAccountHasPermission(string permName)
         {
-            foreach (Permission perm in Permissions)
+            foreach (Permission perm in AccountPermissions)
             {
                 if (perm.Name.Equals(permName))
                 {

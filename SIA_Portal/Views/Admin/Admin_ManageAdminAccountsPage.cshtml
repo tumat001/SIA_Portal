@@ -64,6 +64,11 @@
                         <button type="submit" name="executeAction" value="CreateAction" class="btn">Create New Account</button>
                         <button type="submit" name="executeAction" value="DeleteAction" class="btn"> Delete Selected Accounts</button>
                         <button type="submit" name="executeAction" value="EditAction" class="btn">Edit Selected Account</button>
+                        
+                        @if (Model.IfAccountHasPermission(PermissionConstants.MANAGE_ACCOUNT_PERMISSIONS))
+                        {
+                            <button type="submit" name="executeAction" value="ConfigurePermissionAction" class="btn">Configure Permission of Selected Account</button>
+                        }
 
                     </center>
                 </div>

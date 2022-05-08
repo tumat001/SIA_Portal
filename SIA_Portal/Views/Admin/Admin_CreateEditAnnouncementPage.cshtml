@@ -30,6 +30,32 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/Res/Css/forms_styles.css" type="text/css" />
     <title>@Model.GetHeaderToDisplay()</title>
+
+
+    <script src="//code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#AddCatToCurrCats').click(function () {
+                $("#DivisionNameList > option:selected").each(function () {
+                    $(this).appendTo("#InputAccountDivisionNameList");
+                });
+            });
+
+            $('#DeleteCatFromCurrCats').click(function () {
+                $("#InputAccountDivisionNameList > option:selected").each(function () {
+                    $(this).remove().appendTo("#DivisionNameList");
+                });
+
+
+                $("#InputAccountDivisionNameList option").prop("selected", true);
+            });
+
+            //
+        })
+    </script>
+
 </head>
 
 
@@ -58,39 +84,49 @@
             <input id="fileInput" type="file" style="display:none;" />
             <input type="button" class="button-wrapper" value="Select Image..." onclick="document.getElementById('fileInput').click();" />
             -->
-                    <input type="file" name="InputImage" id="InputImage" onchange="fileCheck(this);"/>
+                    <input type="file" name="InputImage" id="InputImage" onchange="fileCheck(this);" />
 
                     @if (Model.AnnouncementImagePath != null)
                     {
-                        
+
                         <img src="@Url.Content(Model.AnnouncementImagePath)" alt="Announcement Image" />
-                        
+
                         <!--
-                        <div class="box"></div>    
-                        -->
+                <div class="box"></div>
+                -->
                     }
 
-                
-                </div>
-
-                <div class="category-wrapper">
-                    <label for="title">Announce to:</label>
-                    @Html.DropDownListFor(m => m.InputChosenEmployeeCategoryName, new SelectList(Model.ListOfEmployeeCategoriesName), new { })
-
-                    <!--
-            <select name="category" id="category" class="category-select">
-                <option value="Agent">Agent</option>
-                <option value="Team Leader">Team Leader</option>
-                <option value="Quality Analyst">Quality Analyst</option>
-                <option value="Workforce">Workforce</option>
-                <option value="Operation Manager">Operation Manager</option>
-                <option value="All">All</option>
-            </select>
-            -->
 
                 </div>
 
 
+            </fieldset>
+
+
+            <fieldset class="announcement-content">
+                <legend>Announce To Divisions</legend>
+                <div class="text-content-wrapper" style="display: flex; justify-content: space-around">
+                    <div class="col-4">
+                        <div class="row">
+                            <p>Available Divisions:</p>
+                            @Html.ListBoxFor(m => m.DivisionNameList, new SelectList(Model.DivisionNameList), new { @id = "DivisionNameList" })
+
+                            <br /><br />
+                            <button type="button" name="executeCategoryAction" id="AddCatToCurrCats" value="AddCatToCurrCats">Add Selected Division</button>
+
+                        </div>
+                    </div>
+                    <br /><br /><br />
+                    <div class="col-4">
+                        <div class="row">
+                            <p>Current Divisions:</p>
+                            @Html.ListBoxFor(m => m.InputAccountDivisionNameList, new SelectList(Model.InputAccountDivisionNameList), new { @id = "InputAccountDivisionNameList" })
+
+                            <br /><br />
+                            <button type="button" name="executeCategoryAction" id="DeleteCatFromCurrCats" value="DeleteCatFromCurrCats">Remove Selected Division</button>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
 
             <fieldset class="announcement-content">
@@ -100,7 +136,7 @@
                 </div>
             </fieldset>
 
-            <br/>
+            <br />
             @{
 
                 bool toShow = false;
@@ -126,14 +162,14 @@
                 }
 
             }
-            <br/>
+            <br />
 
             <div class="button-wrapper">
                 <button type="submit" name="executeAction" value="SaveChanges">@Model.GetButtonTextDisplay()</button>
             </div>
-            <br/>
-            <br/>
-            <br/>
+            <br />
+            <br />
+            <br />
         </div>
         }
     </main>

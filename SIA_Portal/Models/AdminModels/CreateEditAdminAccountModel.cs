@@ -45,9 +45,16 @@ namespace SIA_Portal.Models.AdminModels
 
         //
 
-        public IList<string> CategoryNameList { set; get; }
+        public IList<string> DivisionNameList { set; get; }
 
-        public IList<string> InputCategoryNameList { set; get; }
+        public IList<string> InputAccountDivisionNameList { set; get; }
+
+
+        public IList<string> ToDivisionResponsibilityNameList { set; get; }
+
+        public IList<string> InputAccountToDivisionResponibilityNameList { set; get; }
+
+
 
         //
 

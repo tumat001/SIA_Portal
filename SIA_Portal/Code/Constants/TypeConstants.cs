@@ -16,7 +16,7 @@ namespace SIA_Portal.Constants
         public const string ACCOUNT_TYPE_ADMIN_HIGHEST_LEVEL = "SIA_HIGHEST_LEVEL_ADMIN_ACC_TYPE";
         */
 
-        public const string ACCOUNT_TYPE_NORMAL = "";
+        public const string ACCOUNT_TYPE_NORMAL = "Normal";
 
 
 

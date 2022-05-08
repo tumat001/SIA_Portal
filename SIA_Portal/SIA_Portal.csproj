@@ -126,7 +126,14 @@
     <Compile Include="Code\Accessors\PortalAccountAccessor.cs" />
     <Compile Include="Code\Accessors\PortalAccountMustChangeCredentialsAccessor.cs" />
     <Compile Include="Code\Accessors\PortalAccountToAccDivCatAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalAccountToDivisionResponsibilityAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalAccountToNotificationRelationAccessor.cs" />
     <Compile Include="Code\Accessors\PortalAccountToPermissionsAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalDocumentFileAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalFulfillerAccToReqDocuQueueAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalNotificationAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalNotificationToDocumentRelationAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalReqDocuQueueToAccountAccessor.cs" />
     <Compile Include="Code\Accessors\PortalAnnouncementAccessor.cs" />
     <Compile Include="Code\Accessors\PortalAnnToCatAccessor.cs" />
     <Compile Include="Code\Accessors\PortalEmpAccToEmpRecordAccessor.cs" />
@@ -136,9 +143,13 @@
     <Compile Include="Code\Accessors\PortalPermissionAccessor.cs" />
     <Compile Include="Code\Accessors\PortalRecordStoreAccessor.cs" />
     <Compile Include="Code\Accessors\PortalRecordTypeAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalReqDocuQueueAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalReqDocuQueueToReqDocuAccessor.cs" />
+    <Compile Include="Code\Accessors\PortalRequestDocuAccessor.cs" />
     <Compile Include="Code\Constants\DefaultValueConstants.cs" />
     <Compile Include="Code\Constants\InputConstraintsConstants.cs" />
     <Compile Include="Code\Constants\PermissionConstants.cs" />
+    <Compile Include="Code\Constants\QueueStatusConstants.cs" />
     <Compile Include="Code\Constants\SessionConstants.cs" />
     <Compile Include="Code\Constants\TypeConstants.cs" />
     <Compile Include="Code\Constants\ActionNameConstants.cs" />
@@ -156,6 +167,17 @@
     <Compile Include="Code\CustomAccessors\EmployeeRecordsManager\Configs\EmployeeRecordsDatabasePathConfig.cs" />
     <Compile Include="Code\CustomAccessors\EmployeeRecordsManager\Exceptions\EmployeeRecordDoesNotExistException.cs" />
     <Compile Include="Code\CustomAccessors\EmployeeRecordsManager\Types\EmployeeRecord.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\PathConfig\ReqDocuPathConfig.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\AdvancedGetRequestableDocumentsAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\CreateRequestableDocumentAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\DeleteAllRequestableDocumentAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\DeleteRequestableDocumentAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\EditRequestableDocumentAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\GetRequestableDocumentAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Actions\RequestableDocumentExistsAction.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Exception\RequestableDocumentDoesNotExistException.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\Types\RequestableDocument.cs" />
+    <Compile Include="Code\CustomAccessors\RequestableDocument\RequestDocumentManagerHelper.cs" />
     <Compile Include="Code\Utilities\DomIdentifier\DomIdentifier.cs" />
     <Compile Include="Code\Utilities\UrlResolver\UrlResolver.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -166,15 +188,33 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AdminModels\ConfigurePermissionsOfAccountModel.cs" />
+    <Compile Include="Models\AdminModels\ConfirmDeleteAccountDivisionModel.cs" />
     <Compile Include="Models\AdminModels\ConfirmDeleteAnnouncementModel.cs" />
     <Compile Include="Models\AdminModels\ConfirmDeleteEmployeeAccountModel.cs" />
+    <Compile Include="Models\AdminModels\ConfirmDeleteRequestableDocumentModel.cs" />
+    <Compile Include="Models\AdminModels\CreateEditAccountDivisionModel.cs" />
+    <Compile Include="Models\AdminModels\CreateEditRequestableDocumentModel.cs" />
     <Compile Include="Models\AdminModels\CreateEditAnnouncementModel.cs" />
+    <Compile Include="Models\AdminModels\CreateEditPermissionModel.cs" />
+    <Compile Include="Models\AdminModels\FulfillAcknowledgedReqDocQueueModel.cs" />
+    <Compile Include="Models\AdminModels\InspectReqDocuQueueModel.cs" />
+    <Compile Include="Models\AdminModels\ManageAccountDivisionModel.cs" />
+    <Compile Include="Models\AdminModels\ManageAcknowledgedReqDocuQueueModel.cs" />
     <Compile Include="Models\AdminModels\ManageAnnouncementsModel.cs" />
     <Compile Include="Models\AdminModels\ManageEmployeeAccountsModel.cs" />
+    <Compile Include="Models\GenericUser\ManageNotificationModel.cs" />
+    <Compile Include="Models\AdminModels\ManagePermissionsModel.cs" />
+    <Compile Include="Models\AdminModels\ManageReqDocuQueueModel.cs" />
+    <Compile Include="Models\AdminModels\ManageRequestableDocumentsModel.cs" />
+    <Compile Include="Models\AdminModels\TerminateReqDocuQueueModel.cs" />
     <Compile Include="Models\GenericUser\ChangeOwnAccountSettingsModel.cs" />
     <Compile Include="Models\GenericUser\ChangeOwnCredentialsModel.cs" />
+    <Compile Include="Models\GenericUser\RequestForDocumentModel.cs" />
     <Compile Include="Models\GenericUser\ViewAnnouncementModel.cs" />
     <Compile Include="Models\GenericUser\ViewEditEmployeeRecordModel.cs" />
+    <Compile Include="Models\GenericUser\ViewNotificationModel.cs" />
+    <Compile Include="Models\ObjectRepresentations\CategoryRepresentation.cs" />
     <Compile Include="Models\ObjectRepresentations\AdminAccountRepresentation.cs" />
     <Compile Include="Models\AdminModels\AdminHomePageModel.cs" />
     <Compile Include="Models\AdminModels\ConfirmDeleteAdminAccountModel.cs" />
@@ -183,7 +223,12 @@
     <Compile Include="Models\AdminModels\ManageAdminAccountsModel.cs" />
     <Compile Include="Models\EmployeeModels\EmployeeHomePageModel.cs" />
     <Compile Include="Models\ObjectRepresentations\AnnouncementRepresentation.cs" />
+    <Compile Include="Models\ObjectRepresentations\DocumentFileRepresentation.cs" />
     <Compile Include="Models\ObjectRepresentations\EmployeeAccountRepresentation.cs" />
+    <Compile Include="Models\ObjectRepresentations\NotificationRepresentation.cs" />
+    <Compile Include="Models\ObjectRepresentations\PermissionRepresentation.cs" />
+    <Compile Include="Models\ObjectRepresentations\QueueRepresentation.cs" />
+    <Compile Include="Models\ObjectRepresentations\RequestableDocumentRepresentation.cs" />
     <Compile Include="Models\OtherModels\BaseAccountLoggedInModel.cs" />
     <Compile Include="Models\OtherModels\BaseWithTableIndexingLoggedInModel.cs" />
     <Compile Include="Models\RegisNotRequired\RegisNotRequired_LogInModel.cs" />
@@ -273,9 +318,26 @@
     <Content Include="Views\GenericUser\GenericUser_ViewAnnouncementPage.cshtml" />
     <Content Include="Views\GenericUser\GenericUser_ChangeOwnPasswordPage.cshtml" />
     <Content Include="Views\GenericUser\GenericUser_MustChangeOwnUsernamePasswordPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ManagePermissionsPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ManageRequestableDocumentsPage.cshtml" />
+    <Content Include="Views\Admin\Admin_CreateEditRequestableDocumentsPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ConfirmDeleteSelectedRequestableDocumentPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ManageAccountDivisionPage.cshtml" />
+    <Content Include="Views\Admin\Admin_CreateEditAccountDivisionPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ConfirmDeleteSelectedAccountDivisionPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ConfigurePermissionsOfAccountPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ManageReqDocuQueuePage.cshtml" />
+    <Content Include="Views\Admin\Admin_TakeActionReqDocuQueuePage.cshtml" />
+    <Content Include="Views\Admin\Admin_TerminateReqDocuQueuePage.cshtml" />
+    <Content Include="Views\GenericUser\GenericUser_RequestDocumentPage.cshtml" />
+    <Content Include="Views\GenericUser\GenericUser_ManageNotificationPage_GoTo.cshtml" />
+    <Content Include="Views\GenericUser\GenericUser_ViewSingleNotificationPage.cshtml" />
+    <Content Include="Views\Admin\Admin_ManageAcknowledgedReqDocuQueuePage.cshtml" />
+    <Content Include="Views\Admin\Admin_FulfillAcknowledgedReqDocuQueuePage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\ImageManagerFolder\" />
+    <Folder Include="Res\Documents\" />
     <Folder Include="TempImports\Telecare\image\" />
   </ItemGroup>
   <ItemGroup>

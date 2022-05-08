@@ -39,6 +39,8 @@ namespace SIA_Portal.Models.AdminModels
         }
         
 
+        public bool LoggedInAccountHasAcknowledgedReqDocuQueue { set; get; }
+
         public AdminHomePageModel() : base() { }
 
         public AdminHomePageModel(object account) : base((Account)account) { }

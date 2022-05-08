@@ -1,0 +1,119 @@
+﻿@model SIA_Portal.Models.AdminModels.ConfigurePermissionsOfAccountModel
+@using SIA_Portal.Constants
+@using SIA_Portal.Models.ObjectRepresentations
+@using SIA_Portal.Models.AdminModels
+@{
+    ViewBag.Title = "Admin_ConfigurePermissionsOfAccountPage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_account_style.css" />
+    <title>Manage Permission of Accounts</title>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+    </style>
+</head>
+
+<body>
+    <main>
+        @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__CONFIGURE_PERMISSIONS_OF_ACCOUNT__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME))
+        {
+
+            <center>
+                <div class="section-2">
+                    <center>
+                        @Html.HiddenFor(m => m.AccPermissionToEditId)
+                        @Html.HiddenFor(m => m.AccPermissionToEditUsername)
+
+                        <br>
+                        <p> Permissions of Account: @Model.AccPermissionToEditUsername </p>
+                        <br>
+
+                        <div>
+                            <button type="submit" name="executeAction" value="SaveChanges">Save Changes</button>
+
+                            <button type="submit" name="executeAction" value="CancelChanges">Cancel</button>
+                        </div>
+                        <br /><br />
+
+                        @{
+
+                            bool toShow = false;
+                            string colorToUse = "";
+
+                            if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_FAILED)
+                            {
+                                toShow = true;
+                            }
+                            else if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_SUCCESS)
+                            {
+                                toShow = true;
+                            }
+                            colorToUse = ActionStatusConstants.GetColorAsStringAssociatedWithStatus(Model.ActionExecuteStatus);
+
+                            if (toShow)
+                            {
+                                <center>
+                                    <p style="@colorToUse">@Model.StatusMessage</p>
+                                </center>
+                            }
+                            <br/><br/>
+                        }
+
+                        
+
+                        <table style="width:95%">
+
+                            <tr>
+                                <th>Permission Name</th>
+                                <th>Description</th>
+                                <th>Select</th>
+                            </tr>
+
+
+                            @for (var i = 0; i < Model.AllPermissionRepresentation.Count; i++)
+                            {
+
+                                <tr>
+                                    @Html.HiddenFor(m => Model.AllPermissionRepresentation[i].Id)
+                                    <td>@Html.DisplayFor(m => Model.AllPermissionRepresentation[i].Title)</td>
+                                    <td>@Html.DisplayFor(m => Model.AllPermissionRepresentation[i].FullContent)</td>
+                                    <td>@Html.CheckBoxFor(m => Model.AllPermissionRepresentation[i].IsSelected)</td>
+                                </tr>
+                            }
+
+                        </table>
+
+
+                        <br/><br/>
+                    </center>
+                </div>
+            </center>
+        }
+    </main>
+</body>

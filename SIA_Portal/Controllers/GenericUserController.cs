@@ -10,7 +10,6 @@ using CommonDatabaseActionReusables.GeneralUtilities.DatabaseActions;
 using SIA_Portal.Models.EmployeeModel;
 using SIA_Portal.Models.ObjectRepresentations;
 using CommonDatabaseActionReusables.AnnouncementManager;
-using SIA_Portal.Models.AdminModels;
 using SIA_Portal.Controllers.BaseControllers;
 using CommonDatabaseActionReusables.CategoryManager;
 using System.Data.SqlClient;
@@ -21,6 +20,12 @@ using System.IO;
 using CommonDatabaseActionReusables.GeneralUtilities.TypeUtilities;
 using SIA_Portal.Models.GenericUserModel;
 using SIA_Portal.CustomAccessors.EmployeeRecordsManager;
+using SIA_Portal.CustomAccessors;
+using SIA_Portal.CustomAccessors.RequestableDocument;
+using CommonDatabaseActionReusables.QueueManager;
+using CommonDatabaseActionReusables.NotificationManager;
+using CommonDatabaseActionReusables.DocumentManager;
+using CommonDatabaseActionReusables.RelationManager;
 
 namespace SIA_Portal.Controllers
 {
@@ -33,6 +38,8 @@ namespace SIA_Portal.Controllers
 
         public const string TEMP_DATA_ANNOUNCEMENT_ID_KEY = "TempDataAnnouncementIdKey";
 
+        public const string TEMP_DATA_READ_NOTIF_KEY = "TempDataReadNotifKey";
+
 
         private PortalAccountDivisionCategoryAccessor employeeDivCategoryAccessor = new PortalAccountDivisionCategoryAccessor();
         private PortalEmpAccToEmpRecordAccessor empAccToEmpRecordAccessor = new PortalEmpAccToEmpRecordAccessor();
@@ -43,6 +50,18 @@ namespace SIA_Portal.Controllers
         private PortalImageAccessor imageAccessor = new PortalImageAccessor();
 
         private PortalAccountMustChangeCredentialsAccessor accountChangeCredentialsAccessor = new PortalAccountMustChangeCredentialsAccessor();
+
+        private PortalRequestDocuAccessor requestDocuAccessor = new PortalRequestDocuAccessor();
+        private PortalReqDocuQueueAccessor reqDocuQueueAccessor = new PortalReqDocuQueueAccessor();
+        private PortalReqDocuQueueToAccountAccessor reqDocuQueueToAccountAccessor = new PortalReqDocuQueueToAccountAccessor();
+        private PortalReqDocuQueueToReqDocuAccessor reqDocuQueueToReqDocuAccessor = new PortalReqDocuQueueToReqDocuAccessor();
+
+        private PortalNotificationAccessor notificationAccessor = new PortalNotificationAccessor();
+        private PortalAccountToNotificationRelationAccessor accountToNotificationAccessor = new PortalAccountToNotificationRelationAccessor();
+        private PortalNotificationToDocumentRelationAccessor notificationToDocumentAccessor = new PortalNotificationToDocumentRelationAccessor();
+
+        private PortalDocumentFileAccessor documentFileAccessor = new PortalDocumentFileAccessor();
+
 
 
         #region "Page account bar"
@@ -547,6 +566,513 @@ namespace SIA_Portal.Controllers
         }
 
         #endregion
+
+
+        #region "Requesting for Docu"
+
+        [HttpGet]
+        [ActionName(ActionNameConstants.GENERIC_USER__REQUEST_DOCUMENT_ID_SELECTED)]
+        public JsonResult GetRequestableDocumentRepresentationFromId(string docuId)
+        {
+            var id = int.Parse(docuId);
+
+            var docu = requestDocuAccessor.ReqDocuManagerHelper.TryGetRequestableDocumentFromId(id);
+            var rep = new RequestableDocumentRepresentation();
+
+            if (docu != null)
+            {
+                rep.Title = docu.DocumentName;
+                rep.FullDescription = docu.GetNoteDescriptionAsString();
+                rep.Id = docu.Id;
+            }
+
+            return Json(rep, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        [ActionName(ActionNameConstants.GENERIC_USER__REQUEST_FOR_DOCUMENT__GO_TO)]
+        public ActionResult GoTo_RequestForDocumentPage()
+        {
+            var account = (Account)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_ACCOUNT_OBJ];
+            var model = (RequestForDocumentModel)TempData[TEMP_DATA_MODEL_KEY];
+
+            return View(GetConfigured_RequestableDocumentsModel(model, account));
+        }
+
+        
+        private RequestForDocumentModel GetConfigured_RequestableDocumentsModel(RequestForDocumentModel model, Account account)
+        {
+            if (model == null)
+            {
+                model = new RequestForDocumentModel();
+            }
+            model.LoggedInAccount = account;
+
+
+            var allDocus = requestDocuAccessor.ReqDocuManagerHelper.TryAdvancedGetRequestableDocumentsAsList(new AdvancedGetParameters());
+            if (model.AllRequestableDocumentRepresentations == null)
+            {
+                model.AllRequestableDocumentRepresentations = new List<RequestableDocumentRepresentation>();
+            }
+
+            model.AllRequestableDocumentRepresentations.Clear();
+            foreach (RequestableDocument docu in allDocus)
+            {
+                var rep = new RequestableDocumentRepresentation();
+                rep.Title = docu.DocumentName;
+                rep.FullDescription = docu.GetNoteDescriptionAsString();
+                rep.Id = docu.Id;
+
+                model.AllRequestableDocumentRepresentations.Add(rep);
+            }
+
+            if (model.SelectedDocumentRepresentation == null && model.AllRequestableDocumentRepresentations.Count > 1)
+            {
+                model.SelectedDocumentRepresentation = model.AllRequestableDocumentRepresentations[0];
+                model.SelectedDocumentRepId = model.SelectedDocumentRepresentation.Id;
+            }
+
+
+            return model;
+        }
+
+
+        [HttpPost]
+        [ActionName(ActionNameConstants.GENERIC_USER__REQUEST_FOR_DOCUMENT__EXECUTE_ACTION)]
+        public ActionResult RequestForDocumentPage_ExecuteAction(RequestForDocumentModel model, string executeAction)
+        {
+            if (executeAction.Equals("RequestAction"))
+            {
+                return CreateRequestForDocument_AndSendToQueue(model);
+            }
+            else
+            {
+                return RedirectToAction(ActionNameConstants.ADMIN_SIDE__HOME_PAGE, ControllerNameConstants.ADMIN_CONTROLLER_NAME);
+            }
+        }
+
+
+        private ActionResult CreateRequestForDocument_AndSendToQueue(RequestForDocumentModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                var createSuccess = AttemptCreateRequestQueue_AndAssociatedActions(model);
+
+                if (createSuccess)
+                {
+                    model.StatusMessage = "Request for document sent!";
+                    model.ActionExecuteStatus = ActionStatusConstants.STATUS_SUCCESS;
+
+                }
+                else
+                {
+                    model.StatusMessage = "Error in sending request. Please try again.";
+                    model.ActionExecuteStatus = ActionStatusConstants.STATUS_FAILED;
+                }
+
+
+            }
+            else
+            {
+                model.StatusMessage = "Invalid inputs detected";
+                model.ActionExecuteStatus = ActionStatusConstants.STATUS_FAILED;
+            }
+
+
+            TempData.Add(TEMP_DATA_MODEL_KEY, model);
+
+            return RedirectToAction(ActionNameConstants.GENERIC_USER__REQUEST_FOR_DOCUMENT__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME);
+        }
+
+
+        private bool AttemptCreateRequestQueue_AndAssociatedActions(RequestForDocumentModel model)
+        {
+            var success = false;
+
+            try
+            {
+                var builder = new Queue.Builder();
+                builder.SetDescriptionUsingString(model.InputReasonForRequest);
+                builder.PriorityLevel = model.InputPriorityLevel;
+                builder.Status = QueueStatusConstants.STATUS_PENDING;
+                builder.SetStatusDescriptionUsingString("");
+                builder.DateTimeOfQueue = DateTime.Now;
+
+                var queueId = reqDocuQueueAccessor.QueueDatabaseManagerHelper.CreateQueue(builder);
+
+                if (queueId != -1)
+                {
+                    var loggedInAcc = (Account)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_ACCOUNT_OBJ];
+                    var successCreateDocuToAcc = reqDocuQueueToAccountAccessor.EntityToCategoryDatabaseManagerHelper.CreatePrimaryToTargetRelation(queueId, loggedInAcc.Id);
+
+                    //
+                    var docuSelected = requestDocuAccessor.ReqDocuManagerHelper.TryGetRequestableDocumentFromId(model.SelectedDocumentRepId);
+
+                    if (docuSelected != null)
+                    {
+                        var successCreateQueueToDocu = reqDocuQueueToReqDocuAccessor.EntityToCategoryDatabaseManagerHelper.CreatePrimaryToTargetRelation(queueId, docuSelected.Id);
+
+                        success = successCreateDocuToAcc & successCreateQueueToDocu;
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return success;
+        }
+
+
+        #endregion
+
+
+        //
+
+
+        #region "Manage Notification Table page"
+
+        [ActionName(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO)]
+        public ActionResult GoToManageNotificationPage()
+        {
+            var account = (Account)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_ACCOUNT_OBJ];
+            var model = (ManageNotificationModel)TempData[TEMP_DATA_MODEL_KEY];
+            var adGetParam = (AdvancedGetParameters)TempData[TEMP_DATA_AD_GET_PARM_KEY];
+
+            return View(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO, GetConfiguredManageNotificationModel(account, adGetParam, model));
+        }
+
+        private ManageNotificationModel GetConfiguredManageNotificationModel(Account account, AdvancedGetParameters adGetParam = null, ManageNotificationModel model = null)
+        {
+            if (model == null)
+            {
+                model = new ManageNotificationModel(account);
+            }
+            model.LoggedInAccount = account;
+
+            //
+
+            var selectedIds = (IList<int>)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_SELECTED_NOTIFICATIONS];
+            if (selectedIds == null)
+            {
+                selectedIds = new List<int>();
+            }
+
+            if (model.EntityRepresentationsInPage != null)
+            {
+                foreach (NotificationRepresentation rep in model.EntityRepresentationsInPage)
+                {
+                    if (rep.IsSelected)
+                    {
+                        if (!selectedIds.Contains(rep.Id))
+                        {
+                            selectedIds.Add(rep.Id);
+                        }
+                    }
+                    else
+                    {
+                        if (selectedIds.Contains(rep.Id))
+                        {
+                            selectedIds.Remove(rep.Id);
+                        }
+                    }
+
+                }
+            }
+
+            System.Web.HttpContext.Current.Session[SessionConstants.SESSION_SELECTED_NOTIFICATIONS] = selectedIds;
+            model.SelectedEntityIds = selectedIds;
+
+            //
+
+            if (adGetParam == null)
+            {
+                adGetParam = new AdvancedGetParameters();
+            }
+            adGetParam.Fetch = ManageNotificationModel.ENTITIES_PER_PAGE;
+            adGetParam.Offset = ManageNotificationModel.GetOffsetToUseBasedOnPageIndex(model.CurrentPageIndex);
+            adGetParam.TextToContain = model.TitleFilter;
+
+            model.AdGetParam = adGetParam;
+
+            //
+
+            var notifIdsOfLoggedIn = accountToNotificationAccessor.EntityToCategoryDatabaseManagerHelper.TryAdvancedGetRelationsOfPrimaryAsSet(model.LoggedInAccount.Id, adGetParam);
+            var entities = new List<Notification>();
+            foreach (int id in notifIdsOfLoggedIn)
+            {
+                entities.Add(notificationAccessor.NotificationManagerHelper.TryGetNotificationInfoFromId(id));
+            }
+
+
+
+            model.EntitiesInPage = entities;
+
+            if (model.EntityRepresentationsInPage == null)
+            {
+                model.EntityRepresentationsInPage = new List<NotificationRepresentation>();
+            }
+            else
+            {
+                model.EntityRepresentationsInPage.Clear();
+            }
+
+            foreach (Notification ent in entities)
+            {
+                var rep = new NotificationRepresentation();
+                rep.Id = ent.Id;
+                rep.Title = ent.Title;
+                rep.ContentPreview = ent.GetContentAsString();
+                rep.IsSelected = model.SelectedEntityIds.Contains(ent.Id);
+
+                model.EntityRepresentationsInPage.Add(rep);
+            }
+
+            //
+
+            var countAdGetParam = new AdvancedGetParameters();
+            countAdGetParam.TextToContain = adGetParam.TextToContain;
+            countAdGetParam.OrderByParameters = adGetParam.OrderByParameters;
+
+            //model.TotalEntityCount = annAccessor.AnnouncementManagerHelper.AdvancedGetAnnouncementCount(countAdGetParam);
+            var notifIdCountOfLoggedInAcc = accountToNotificationAccessor.EntityToCategoryDatabaseManagerHelper.TryAdvancedGetRelationOfPrimaryCount(model.LoggedInAccount.Id, countAdGetParam);
+            model.TotalEntityCount = notifIdCountOfLoggedInAcc;
+
+            if (!model.IsPageIndexValid(model.CurrentPageIndex))
+            {
+                model.CurrentPageIndex = 1;
+            }
+
+            return model;
+        }
+
+
+        [HttpPost]
+        [ActionName(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO)]
+        public ActionResult ManageNotificationPage_ExecuteAction(ManageNotificationModel model, string executeAction)
+        {
+            if (executeAction.Equals("ReadAction"))
+            {
+                return TransitionFromNotificationManagePage_ToReadNotificationPage(model);
+            }
+            else if (executeAction.Equals("DeleteAction"))
+            {
+                return DeleteSelectedNotifications(model);
+                //return TransitionFromManagePage_ToDeleteAnnouncementPage(model);
+            }
+            else if (executeAction.Equals("TextFilterSubmit"))
+            {
+                return SetTextFilter_ToManageNotificationModel_ThenGoToManagePage(model);
+            }
+            else
+            {
+                return ManageNotificationPage_DoPageIndexChange(model, executeAction);
+            }
+        }
+
+        private ActionResult ManageNotificationPage_DoPageIndexChange(ManageNotificationModel model, string pageIndex)
+        {
+            var pageIndexSelected = int.Parse(pageIndex);
+            model.CurrentPageIndex = pageIndexSelected;
+
+            TempData.Add(TEMP_DATA_MODEL_KEY, model);
+
+            return RedirectToAction(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME);
+        }
+
+
+        private ActionResult SetTextFilter_ToManageNotificationModel_ThenGoToManagePage(ManageNotificationModel model)
+        {
+            model.CurrentPageIndex = 1;
+            var selectedAccIds = (IList<int>)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_SELECTED_NOTIFICATIONS];
+            if (selectedAccIds != null)
+            {
+                selectedAccIds.Clear();
+            }
+
+            TempData.Add(TEMP_DATA_MODEL_KEY, model);
+
+            return RedirectToAction(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME);
+        }
+
+
+        private ActionResult TransitionFromNotificationManagePage_ToReadNotificationPage(ManageNotificationModel model)
+        {
+            var loggedInAccount = (Account)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_ACCOUNT_OBJ];
+            model = GetConfiguredManageNotificationModel(loggedInAccount, null, model);
+            var selectedIds = (IList<int>)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_SELECTED_NOTIFICATIONS];
+
+            if (selectedIds != null && selectedIds.Count > 0)
+            {
+                Notification notif = notificationAccessor.NotificationManagerHelper.TryGetNotificationInfoFromId(selectedIds[0]);
+
+                if (notif != null)
+                {
+                    TempData.Add(TEMP_DATA_READ_NOTIF_KEY, notif);
+
+                    return RedirectToAction(ActionNameConstants.GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME);
+                }
+            }
+
+            //
+
+            TempData.Add(TEMP_DATA_MODEL_KEY, model);
+
+            return RedirectToAction(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME);
+        }
+
+
+
+        private ActionResult DeleteSelectedNotifications(ManageNotificationModel model)
+        {
+            var loggedInAccount = (Account)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_ACCOUNT_OBJ];
+            model = GetConfiguredManageNotificationModel(loggedInAccount, null, model);
+
+
+            var idsToRemove = new List<int>();
+
+            var adGetParam = new AdvancedGetParameters();
+            foreach (int id in model.SelectedEntityIds)
+            {
+                var docuIdsSet = notificationToDocumentAccessor.EntityToCategoryDatabaseManagerHelper.TryAdvancedGetRelationsOfPrimaryAsSet(id, adGetParam);
+                
+                //
+
+                var success = notificationAccessor.NotificationManagerHelper.TryDeleteNotificationWithId(id);
+                if (success)
+                {
+                    idsToRemove.Add(id);
+                }
+
+                //
+
+                foreach (int docuId in docuIdsSet)
+                {
+                    if (!notificationToDocumentAccessor.EntityToCategoryDatabaseManagerHelper.IfTargetExists(docuId))
+                    {
+                        documentFileAccessor.DocumentDatabaseManagerHelper.DeleteDocumentWithId(docuId);
+                    }
+                }
+
+            }
+
+            foreach (int id in idsToRemove)
+            {
+                model.SelectedEntityIds.Remove(id);
+            }
+
+            return RedirectToAction(ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME);
+        }
+
+
+
+        #endregion
+
+        #region "View Notification"
+
+        [ActionName(ActionNameConstants.GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__GO_TO)]
+        public ActionResult GoToViewSingleNotificationPage()
+        {
+            var account = (Account)System.Web.HttpContext.Current.Session[SessionConstants.SESSION_ACCOUNT_OBJ];
+            var model = (ViewNotificationModel)TempData[TEMP_DATA_MODEL_KEY];
+            var adGetParam = (AdvancedGetParameters)TempData[TEMP_DATA_AD_GET_PARM_KEY];
+
+            return View(ActionNameConstants.GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__GO_TO, GetConfiguredViewNotificationModel(account, adGetParam, model));
+        }
+
+        private ViewNotificationModel GetConfiguredViewNotificationModel(Account account, AdvancedGetParameters adGetParam = null, ViewNotificationModel model = null)
+        {
+            if (model == null)
+            {
+                model = new ViewNotificationModel(account);
+            }
+            model.LoggedInAccount = account;
+
+            //
+
+            var tempSelectedNotif = (Notification)TempData[TEMP_DATA_READ_NOTIF_KEY];
+            if (tempSelectedNotif != null)
+            {
+                var rep = new NotificationRepresentation();
+                rep.Id = tempSelectedNotif.Id;
+                rep.Title = tempSelectedNotif.Title;
+                rep.FullContent = tempSelectedNotif.GetContentAsString();
+
+                model.NotifRep = rep;
+            }
+
+            //
+
+            if (model.NotifRep != null )//&& model.DocuFileRep == null)
+            {
+                if (notificationToDocumentAccessor.EntityToCategoryDatabaseManagerHelper.TryIfPrimaryExists(model.NotifRep.Id))
+                {
+                    
+                    var docuId = -1;
+                    var docuSet = notificationToDocumentAccessor.EntityToCategoryDatabaseManagerHelper.AdvancedGetRelationsOfPrimaryAsSet(model.NotifRep.Id, new AdvancedGetParameters());
+                    foreach (int id in docuSet)
+                    {
+                        docuId = id;
+                    }
+
+                    var docu = documentFileAccessor.DocumentDatabaseManagerHelper.GetDocumentInfoFromId(docuId);
+                    if (docu != null)
+                    {
+                        model.HasDocu = true;
+
+                        /*
+                        var rep = new DocumentFileRepresentation();
+                        rep.Id = docu.Id;
+                        rep.OriginalFileName = docu.OriginalNameOfFile;
+                        rep.DocuExt = docu.DocumentExtension;
+                        rep.DocuBytes = docu.DocumentContentAsBytes;
+                        rep.DirectoryPath = docu.FullPath;
+
+                        model.DocuFileRep = rep;
+                        */
+                        model.DocuId = docu.Id;
+                        model.DocuOriginalName = docu.OriginalNameOfFile;
+                    }
+
+                }
+            }
+
+            //
+
+            return model;
+        }
+
+
+
+        [HttpPost]
+        [ActionName(ActionNameConstants.GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__EXECUTE_ACTION)]
+        public ActionResult ViewNotificationPage_ExecuteAction(ViewNotificationModel model, string executeAction)
+        {
+            return DownloadDocumentFile(int.Parse(executeAction));
+        }
+
+
+        [HttpGet]
+        public ActionResult DownloadDocumentFile(int docuId)
+        {
+            var docuFile = documentFileAccessor.DocumentDatabaseManagerHelper.GetDocumentInfoFromId(docuId);
+
+            string path = docuFile.FullPath;
+            string filename2 = docuFile.OriginalNameOfFile;
+            byte[] filebytes = docuFile.DocumentContentAsBytes;
+            string contentType = MimeMapping.GetMimeMapping(filename2 + docuFile.DocumentExtension);
+
+
+            return File(filebytes, contentType, filename2 + docuFile.DocumentExtension);
+        }
+
+
+        #endregion
+
 
     }
 }

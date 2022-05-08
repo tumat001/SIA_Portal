@@ -1,0 +1,141 @@
+﻿@model SIA_Portal.Models.AdminModels.ManageReqDocuQueueModel
+@using SIA_Portal.Constants
+@using SIA_Portal.Models.ObjectRepresentations
+@using SIA_Portal.Models.AdminModels
+@{
+    ViewBag.Title = "Admin_ManageReqDocuQueuePage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_account_style.css" />
+    <title>Manage Requests</title>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+    </style>
+    <!--
+     <asp:HiddenField ID="hdnPersonId" Value="1" runat="server" ClientIDMode="Static" />
+    -->
+
+    <script src="//code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#QueueStatusList").on("change", function () {
+                //var selectedVal = $(this).val();
+
+                //$("#SelectedQueueStatus").val(selectedVal);
+
+                var form = $(event.target).parents('form');
+                form.submit();
+            });
+        })
+    </script>
+
+</head>
+
+<body>
+    <main>
+        @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__MANAGE_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME, new { id = "myForm" }))
+        {
+            Html.HiddenFor(m => Model.AdGetParam);
+            Html.HiddenFor(m => Model.AdGetParam.Fetch);
+            Html.HiddenFor(m => Model.AdGetParam.Offset);
+
+            Html.HiddenFor(m => Model.AdGetParam.TextToContain);
+            Html.HiddenFor(m => Model.CurrentPageIndex);
+
+
+            for (int i = 0; i < Model.AdGetParam.OrderByParameters.Count; i += 1)
+            {
+                Html.HiddenFor(m => Model.AdGetParam.OrderByParameters[i]);
+            }
+            <button type="submit" hidden="hidden" name="executeAction" value="TextFilterSubmit"></button>
+
+
+            <center>
+                <div class="section-1">
+
+                    <p> Actions </p>
+                    <br>
+                    <center>
+                        <button type="submit" name="executeAction" value="InspectAction" class="btn">Inspect Selected Requests</button>
+                        <button type="submit" name="executeAction" value="TerminateAction" class="btn">Terminate Selected Requests</button>
+
+                        @Html.DropDownListFor(m => m.SelectedQueueStatus, new SelectList(Model.QueueStatusList, Model.SelectedQueueStatus), new { @id = "QueueStatusList" })
+                    </center>
+                </div>
+            </center>
+
+            <center>
+                <div class="section-2">
+                    <center>
+                        <br>
+                        <p> Requests </p>
+                        <br>
+
+
+                        <table style="width:95%">
+
+                            <tr>
+                                <th>Document To Request</th>
+                                <th>Comments of Requester (Preview)</th>
+                                <th>Status</th>
+                                <th>Select</th>
+                            </tr>
+
+
+                            @for (var i = 0; i < Model.EntityRepresentationsInPage.Count; i++)
+                            {
+
+                            <tr>
+                                @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].Id)
+                                @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].Status)
+
+                                <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].AssociatedReqDocuName)</td>
+                                <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].DescriptionPreview)</td>
+                                <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].StatusAsText)</td>
+                                <td>@Html.CheckBoxFor(m => Model.EntityRepresentationsInPage[i].IsSelected)</td>
+                            </tr>
+                            }
+                        </table>
+
+
+                        <div class="pagination">
+
+                            @foreach (int i in (Model.GetPageIndicesToDisplayBasedOnCurrentPageIndex()))
+                            {
+                                <button type="submit" name="executeAction" value="@i">@i</button>
+                            }
+
+                        </div>
+                    </center>
+                </div>
+            </center>
+        }
+    </main>
+</body>
+

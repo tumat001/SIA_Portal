@@ -39,9 +39,10 @@ namespace SIA_Portal.Models.AdminModels
         public HttpPostedFileBase InputImage { set; get; }
 
         //
-        public string InputChosenEmployeeCategoryName { set; get; }
+        public IList<string> DivisionNameList { set; get; }
 
-        public IList<string> ListOfEmployeeCategoriesName { set; get; }
+        public IList<string> InputAccountDivisionNameList { set; get; }
+
 
         //
 

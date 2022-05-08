@@ -1,0 +1,101 @@
+﻿@model SIA_Portal.Models.GenericUserModel.ViewNotificationModel
+@using SIA_Portal.Constants;
+@{
+    ViewBag.Title = "GenericUser_ViewSingleNotificationPage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .maincontainer {
+        border: 2px solid black;
+        text-align: center;
+        margin: 2%;
+        padding: 1%;
+        height: 80%;
+    }
+
+        .maincontainer p {
+            padding: 1%;
+        }
+
+        .maincontainer img {
+            padding: 0.5%;
+        }
+</style>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Viewing Notification</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+          crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <br />
+
+    <div class="maincontainer">
+        @using (Html.BeginForm(ActionNameConstants.GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__EXECUTE_ACTION, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME,
+            FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(m => m.HasDocu)
+            @Html.HiddenFor(m => m.DocuId)
+            @Html.HiddenFor(m => m.NotifRep.Id)
+            @Html.HiddenFor(m => m.NotifRep.FullContent)
+
+
+            <fieldset class="announcement-info" style="box-sizing:border-box">
+                <legend>Title:</legend>
+                <div class="title-wrapper">
+                    @Html.DisplayFor(m => m.NotifRep.Title)
+
+                </div>
+
+            </fieldset>
+            <br /><br />
+
+            if (Model.NotifRep.FullContent != null)
+            {
+                <fieldset class="announcement-content" style="box-sizing:border-box">
+                    <legend>Remarks from Fulfiller:</legend>
+                    <div class="text-content-wrapper" style="align-content:center">
+                        @Html.Raw(Model.NotifRep.FullContent.Replace(Environment.NewLine, "<br/>"))
+                    </div>
+                </fieldset>
+            }
+
+            if (Model.HasDocu)
+            {
+                <fieldset class="announcement-content" style="box-sizing:border-box">
+                    <legend>Download Attached Document:</legend>
+                    <div class="text-content-wrapper">
+
+                        @Html.DisplayFor(m => m.DocuOriginalName)
+                        <br /><br />
+                        <button type="submit" name="executeAction" value="@Model.DocuId">Download</button>
+                        
+                    </div>
+                </fieldset>
+            }
+
+
+            <br />
+            <br />
+        }
+    </div>
+
+</body>

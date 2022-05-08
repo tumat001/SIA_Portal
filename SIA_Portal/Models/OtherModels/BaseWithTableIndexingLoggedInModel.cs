@@ -16,7 +16,7 @@ namespace SIA_Portal.Models.BaseModels
     public class BaseWithTableIndexingLoggedInModel<T, U> : BaseAccountLoggedInModel
     {
 
-        public const int ENTITIES_PER_PAGE = 2;
+        public const int ENTITIES_PER_PAGE = 10;
         public const int PAGE_INDEX_COUNT_IN_NAVIGATION = 9;
         public const int CURRENT_INDEX_MAX_OFFSET_FROM_LEFT = 4;
         public const int CURRENT_INDEX_MAX_OFFSET_FROM_RIGHT = PAGE_INDEX_COUNT_IN_NAVIGATION - CURRENT_INDEX_MAX_OFFSET_FROM_LEFT - 1;

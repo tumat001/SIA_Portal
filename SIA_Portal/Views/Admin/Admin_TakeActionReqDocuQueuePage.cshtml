@@ -1,0 +1,140 @@
+﻿@model SIA_Portal.Models.AdminModels.InspectReqDocuQueueModel
+@using SIA_Portal.Constants
+@using SIA_Portal.Models.ObjectRepresentations
+@using SIA_Portal.Models.AdminModels
+@{
+    ViewBag.Title = "Admin_TakeActionReqDocuQueuePage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_account_style.css" />
+    <title>Inspect Req Docu Queue</title>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+    </style>
+</head>
+
+<body>
+    <main>
+        @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__INSPECT_SELECTED_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME))
+        {
+            Html.HiddenFor(m => Model.AdGetParam);
+            Html.HiddenFor(m => Model.AdGetParam.Fetch);
+            Html.HiddenFor(m => Model.AdGetParam.Offset);
+
+            Html.HiddenFor(m => Model.AdGetParam.TextToContain);
+            Html.HiddenFor(m => Model.CurrentPageIndex);
+            for (int i = 0; i < Model.AdGetParam.OrderByParameters.Count; i += 1)
+            {
+                Html.HiddenFor(m => Model.AdGetParam.OrderByParameters[i]);
+            }
+            <button type="submit" hidden="hidden" name="executeAction" value="TextFilterSubmit"></button>
+
+
+            <center>
+                <div class="section-1">
+
+                    <p> Actions </p>
+                    <br>
+                    <center>
+                        <button type="submit" name="executeAction" value="TakeAction" class="btn">Take On Requests</button>
+                        <button type="submit" name="executeAction" value="CancelAction" class="btn">Cancel</button>
+                    </center>
+                </div>
+            </center>
+
+            <center>
+                <div class="section-2">
+                    <center>
+                        <br>
+                        <p> Requests </p>
+                        <br>
+
+
+                        <table style="width:95%">
+
+                            <tr>
+                                <th>Document To Request</th>
+                                <th>Comments of Requester</th>
+                            </tr>
+
+
+                            @for (var i = 0; i < Model.EntityRepresentationsInPage.Count; i++)
+                            {
+
+                                <tr>
+                                    @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].Id)
+                                    @Html.HiddenFor(m => Model.EntityRepresentationsInPage[i].Status)
+
+                                    <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].AssociatedReqDocuName)</td>
+                                    <td>@Html.DisplayFor(m => Model.EntityRepresentationsInPage[i].FullDescription)</td>
+
+                                </tr>
+                            }
+                        </table>
+
+
+                        <br /><br />
+                        @{
+
+                            bool toShow = false;
+                            string colorToUse = "";
+
+                            if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_FAILED)
+                            {
+                                toShow = true;
+                            }
+                            else if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_SUCCESS)
+                            {
+                                toShow = true;
+                            }
+                            colorToUse = ActionStatusConstants.GetColorAsStringAssociatedWithStatus(Model.ActionExecuteStatus);
+
+                            if (toShow)
+                            {
+                                <center>
+                                    <p style="@colorToUse">@Model.StatusMessage</p>
+                                </center>
+                            }
+                        }
+
+
+                        <div class="pagination">
+
+                            @foreach (int i in (Model.GetPageIndicesToDisplayBasedOnCurrentPageIndex()))
+                            {
+                                <button type="submit" name="executeAction" value="@i">@i</button>
+                            }
+
+                        </div>
+                    </center>
+                </div>
+            </center>
+        }
+    </main>
+</body>

@@ -1,0 +1,132 @@
+﻿@model SIA_Portal.Models.AdminModels.FulfillAcknowledgedReqDocQueueModel
+@using SIA_Portal.Constants
+@using SIA_Portal.Models.ObjectRepresentations
+@using SIA_Portal.Models.AdminModels
+@{
+    ViewBag.Title = "Admin_FulfillAcknowledgedReqDocuQueuePage";
+    Layout = "~/Views/Shared/Shared_NavBar.cshtml";
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+            crossorigin="anonymous"></script>
+
+    <script src="//code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Res/Css/forms_styles.css" type="text/css" />
+    <title>Fulfill Request</title>
+
+
+    <script src="//code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+
+
+</head>
+
+
+<body>
+    <main>
+        @using (Html.BeginForm(ActionNameConstants.ADMIN_SIDE__FULFILL_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION, ControllerNameConstants.ADMIN_CONTROLLER_NAME,
+            FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(m => m.QueueRep.Id)
+            @Html.HiddenFor(m => m.IsCompleted)
+            @Html.HiddenFor(m => m.QueueRep.FullDescription)
+            @Html.HiddenFor(m => m.QueueRep.AssociatedReqDocuName)
+            @Html.HiddenFor(m => m.QueueRep.StatusAsText)
+            @Html.HiddenFor(m => m.QueueRep.Status)
+
+
+        <div class="form-wrapper">
+            <p>Fulfill Request</p>
+
+            <fieldset class="announcement-info" style="box-sizing:border-box">
+                <legend>Request Info:</legend>
+                <div class="title-wrapper">
+                    <div class="display-field">
+                        @if (Model.QueueRep.FullDescription != null)
+                        {
+                            Html.Raw(Model.QueueRep.FullDescription.Replace(Environment.NewLine, "<br/>"));
+                        }
+                    </div>
+
+                </div>
+
+            </fieldset>
+
+
+            <fieldset class="announcement-content">
+                <legend>Put your remarks here:</legend>
+                <div class="text-content-wrapper">
+                    @Html.TextAreaFor(m => m.InputFulfillerNotificationRemarks, new { @rows = 5, @cols = 40 })
+                </div>
+
+                <legend>Put document here (optional):</legend>
+                <input type="file" name="InputDocument" id="InputDocument" onchange="fileCheck(this);" />
+            </fieldset>
+
+            <br />
+            @{
+
+                bool toShow = false;
+                string colorToUse = "";
+
+                if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_FAILED)
+                {
+                    toShow = true;
+                    //colorToUse = "color:darkred";
+                }
+                else if (Model.ActionExecuteStatus == ActionStatusConstants.STATUS_SUCCESS)
+                {
+                    toShow = true;
+                    //colorToUse = "color:green";
+                }
+                colorToUse = ActionStatusConstants.GetColorAsStringAssociatedWithStatus(Model.ActionExecuteStatus);
+
+                if (toShow)
+                {
+                    <center>
+                        <p style="@colorToUse">@Model.StatusMessage</p>
+                    </center>
+                }
+
+            }
+            <br />
+
+            @if (!Model.IsCompleted)
+            {
+                <div class="button-wrapper">
+                    <button type="submit" name="executeAction" value="FulfillAction">Fulfill Request</button>
+                </div>
+            }
+
+            <br />
+            <div class="button-wrapper">
+                <button type="submit" name="executeAction" value="CancelAction">Back</button>
+            </div>
+
+            <br />
+            <br />
+        </div>
+        }
+    </main>
+</body>
+</html>

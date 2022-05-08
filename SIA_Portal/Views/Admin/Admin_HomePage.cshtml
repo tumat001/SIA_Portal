@@ -51,36 +51,75 @@
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
         <div class="row">
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-primary text-white mb-4">
-                    <div class="card-body">Employee Accounts</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <!--<a class="small text-white stretched-link" href="#">Manage Accounts</a>-->
-                        @Html.ActionLink("Manage Accounts", ActionNameConstants.ADMIN_SIDE__MANAGE_EMPLOYEE_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+
+            @if (Model.IfAccountHasPermission(PermissionConstants.MANAGE_ACCOUNTS))
+            {
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-warning text-white mb-4">
+                        <div class="card-body">Manage Accounts</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
+                            @Html.ActionLink("Manage Accounts", ActionNameConstants.ADMIN_SIDE__MANAGE_ADMIN_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-warning text-white mb-4">
-                    <div class="card-body">Admin Accounts</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
-                        @Html.ActionLink("Manage Accounts", ActionNameConstants.ADMIN_SIDE__MANAGE_ADMIN_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            }
+
+            @if (Model.IfAccountHasPermission(PermissionConstants.MANAGE_ANNOUNCEMENTS))
+            {
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-success text-white mb-4">
+                        <div class="card-body">Manage Announcements</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
+                            @Html.ActionLink("Manage Announcements", ActionNameConstants.ADMIN_SIDE__MANAGE_ANNOUNCEMENT_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-success text-white mb-4">
-                    <div class="card-body">Announcements</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
-                        @Html.ActionLink("Manage Announcements", ActionNameConstants.ADMIN_SIDE__MANAGE_ANNOUNCEMENT_PAGE__GO_TO, new { }, new { @class = "small text-white stretched-link fakeLink" })
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            }
+
+            @if (Model.IfAccountHasPermission(PermissionConstants.MANAGE_REQUESTABLE_DOCUMENT))
+            {
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-secondary text-white mb-4">
+                        <div class="card-body">Manage Requestable Documents</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            @Html.ActionLink("Manage Requestable Documents", ActionNameConstants.ADMIN_SIDE__MANAGE_REQUESTABLE_DOCUMENTS_PAGE__GO_TO, ControllerNameConstants.ADMIN_CONTROLLER_NAME, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+
+
+            @if (Model.IfAccountHasPermission(PermissionConstants.MANAGE_QUEUE_FOR_REQUESTABLE_DOCUMENTS))
+            {
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-danger text-white mb-4">
+                        <div class="card-body">Manage Document Requests</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            @Html.ActionLink("Manage Document Requests", ActionNameConstants.ADMIN_SIDE__MANAGE_REQ_DOC_QUEUE_PAGE__GO_TO, ControllerNameConstants.ADMIN_CONTROLLER_NAME, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.LoggedInAccountHasAcknowledgedReqDocuQueue)
+            {
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">Manage Your Acknowledged Requests</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            @Html.ActionLink("Manage Acknowledged Document Requests", ActionNameConstants.ADMIN_SIDE__MANAGE_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__GO_TO, ControllerNameConstants.ADMIN_CONTROLLER_NAME, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+            }
+
             <!--
     <div class="col-xl-3 col-md-6">
         <div class="card bg-danger text-white mb-4">
@@ -92,8 +131,36 @@
         </div>
     </div>
     -->
+        </div>
+
+        <br/><br/>
+        <div class="row">
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-danger text-white mb-4">
+                    <div class="card-body">Request For Document</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        @Html.ActionLink("Request For Document", ActionNameConstants.GENERIC_USER__REQUEST_FOR_DOCUMENT__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
 
 
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-info text-white mb-4">
+                    <div class="card-body">Manage Notifications</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <!--<a class="small text-white stretched-link" href="#">View Details</a>-->
+                        @Html.ActionLink("Manage Notifications", ActionNameConstants.GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO, ControllerNameConstants.GENERIC_USER_CONTROLLER_NAME, new { }, new { @class = "small text-white stretched-link fakeLink" })
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
             <fieldset class="announcement-content">
                 <center>Announcement Board</center>
                 <br><br>

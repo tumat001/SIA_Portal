@@ -35,6 +35,7 @@ namespace SIA_Portal.Constants
         public const string ADMIN_SIDE__DELETE_SELECTED_ADMIN_ACCOUNT_PAGE__GO_TO = "Admin_ConfirmDeleteSelectedAdminPage";
         public const string ADMIN_SIDE__DELETE_SELECTED_ADMIN_ACCOUNT_PAGE__EXECUTE_ACTION = "Admin_ConfirmDeleteSelectedAdminPage_ExecuteAction";
 
+
         //
 
         public const string ADMIN_SIDE__MANAGE_EMPLOYEE_PAGE__GO_TO = "Admin_ManageEmployeeAccountsPage";
@@ -59,6 +60,65 @@ namespace SIA_Portal.Constants
         public const string ADMIN_SIDE__DELETE_SELECTED_ANNOUNCEMENT_PAGE__GO_TO = "Admin_ConfirmDeleteSelectedAnnouncementPage";
         public const string ADMIN_SIDE__DELETE_SELECTED_ANNOUNCEMENT_PAGE__EXECUTE_ACTION = "Admin_ConfirmDeleteSelectedAnnouncementPage_ExecuteAction";
 
+        //
+
+        public const string ADMIN_SIDE__MANAGE_PERMISSION_PAGE__GO_TO = "Admin_ManagePermissionsPage";
+        public const string ADMIN_SIDE__MANAGE_PERMISSION_PAGE__EXECUTE_ACTION = "Admin_ManagePermissionsPage_ExecuteAction";
+
+        public const string ADMIN_SIDE__CREATE_EDIT_PERMISSION_PAGE__GO_TO = "Admin_CreateEditPermissionPage";
+        public const string ADMIN_SIDE__CREATE_EDIT_PERMISSION_PAGE__EXECUTE_ACTION = "Admin_CreateEditPermissionPage_ExecuteAction";
+
+        //
+
+        public const string ADMIN_SIDE__MANAGE_REQUESTABLE_DOCUMENTS_PAGE__GO_TO = "Admin_ManageRequestableDocumentsPage";
+        public const string ADMIN_SIDE__MANAGE_REQUESTABLE_DOCUMENTS_PAGE__EXECUTE_ACTION = "Admin_ManageRequestableDocumentsPage_ExecuteAction";
+
+        public const string ADMIN_SIDE__CREATE_EDIT_REQUESTABLE_DOCUMENTS_PAGE__GO_TO = "Admin_CreateEditRequestableDocumentsPage";
+        public const string ADMIN_SIDE__CREATE_EDIT_REQUESTABLE_DOCUMENTS_PAGE__EXECUTE_ACTION = "Admin_CreateEditRequestableDocumentsPage_ExecuteAction";
+
+        public const string ADMIN_SIDE__DELETE_SELECTED_REQUESTABLE_DOCUMENTS_PAGE__GO_TO = "Admin_ConfirmDeleteSelectedRequestableDocumentPage";
+        public const string ADMIN_SIDE__DELETE_SELECTED_REQUESTABLE_DOCUMENTS_PAGE__EXECUTE_ACTION = "Admin_ConfirmDeleteSelectedRequestableDocumentPage_ExecuteAction";
+
+        //
+
+        public const string ADMIN_SIDE__MANAGE_ACCOUNT_DIVISION_PAGE__GO_TO = "Admin_ManageAccountDivisionPage";
+        public const string ADMIN_SIDE__MANAGE_ACCOUNT_DIVISION_PAGE__EXECUTE_ACTION = "Admin_ManageAccountDivisionPage_ExecuteAction";
+
+        public const string ADMIN_SIDE__CREATE_EDIT_ACCOUNT_DIVISION_PAGE__GO_TO = "Admin_CreateEditAccountDivisionPage";
+        public const string ADMIN_SIDE__CREATE_EDIT_ACCOUNT_DIVISION_PAGE__EXECUTE_ACTION = "Admin_CreateEditAccountDivisionPage_ExecuteAction";
+
+        public const string ADMIN_SIDE__DELETE_SELECTED_ACCOUNT_DIVISION_PAGE__GO_TO = "Admin_ConfirmDeleteSelectedAccountDivisionPage";
+        public const string ADMIN_SIDE__DELETE_SELECTED_ACCOUNT_DIVISION_PAGE__EXECUTE_ACTION = "Admin_ConfirmDeleteSelectedAccountDivisionPage_ExecuteAction";
+
+        //
+
+        public const string ADMIN_SIDE__CONFIGURE_PERMISSIONS_OF_ACCOUNT__GO_TO = "Admin_ConfigurePermissionsOfAccountPage";
+        public const string ADMIN_SIDE__CONFIGURE_PERMISSIONS_OF_ACCOUNT__EXECUTE_ACTION = "Admin_ConfigurePermissionsOfAccountPage_ExecuteAction";
+
+        //
+
+        public const string ADMIN_SIDE__MANAGE_REQ_DOC_QUEUE_PAGE__GO_TO = "Admin_ManageReqDocuQueuePage";
+        public const string ADMIN_SIDE__MANAGE_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION = "Admin_ManageReqDocuQueuePage_ExecuteAction";
+
+        public const string ADMIN_SIDE__MANAGE_REQ_DOCU_QUEUE_PAGE__CHANGE_QUEUE_STATUS_FILTER = "Admin_ManageReqDocuQueuePage_ChangeStatusFilter";
+
+        public const string ADMIN_SIDE__INSPECT_SELECTED_REQ_DOC_QUEUE_PAGE__GO_TO = "Admin_TakeActionReqDocuQueuePage";
+        public const string ADMIN_SIDE__INSPECT_SELECTED_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION = "Admin_TakeActionReqDocuQueuePage_ExecuteAction";
+
+        public const string ADMIN_SIDE__TERMINATE_REQ_DOC_QUEUE_PAGE__GO_TO = "Admin_TerminateReqDocuQueuePage";
+        public const string ADMIN_SIDE__TERMINATE_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION = "Admin_TerminateReqDocuQueuePage_ExecuteAction";
+
+        //
+
+        public const string ADMIN_SIDE__MANAGE_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__GO_TO = "Admin_ManageAcknowledgedReqDocuQueuePage";
+        public const string ADMIN_SIDE__MANAGE_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION = "Admin_ManageAcknowledgedReqDocuQueuePage_ExecuteAction";
+
+        public const string ADMIN_SIDE__FULFILL_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__GO_TO = "Admin_FulfillAcknowledgedReqDocuQueuePage";
+        public const string ADMIN_SIDE__FULFILL_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION = "Admin_FulfillAcknowledgedReqDocuQueuePage_ExecuteAction";
+
+        public const string ADMIN_SIDE__TERMINATE_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__GO_TO = "Admin_TerminateAcknowledgedReqDocuQueuePage";
+        public const string ADMIN_SIDE__TERMINATE_ACKNOWLEDGED_REQ_DOC_QUEUE_PAGE__EXECUTE_ACTION = "Admin_TerminateAcknowledgedReqDocuQueuePage_ExecuteAction";
+
 
         //
 
@@ -75,6 +135,18 @@ namespace SIA_Portal.Constants
         public const string GENERIC_USER__MUST_CHANGE_CREDENTIALS__GO_TO = "GenericUser_MustChangeOwnUsernamePasswordPage";
         //public const string GENERIC_USER__MUST_CHANGE_CREDENTIALS__EXECUTE = "GenericUser_MustChangeOwnUsernamePasswordPage_ExecuteAction";
 
+
+        public const string GENERIC_USER__REQUEST_FOR_DOCUMENT__GO_TO = "GenericUser_RequestDocumentPage";
+        public const string GENERIC_USER__REQUEST_FOR_DOCUMENT__EXECUTE_ACTION = "GenericUser_RequestDocumentPage_ExecuteAction";
+
+        public const string GENERIC_USER__REQUEST_DOCUMENT_ID_SELECTED = "GenericUser_ReqDocuIdSelectedFromSelectList";
+
+
+        public const string GENERIC_USER__MANAGE_NOTIFICATION_PAGE__GO_TO = "GenericUser_ManageNotificationPage_GoTo";
+        public const string GENERIC_USER__MANAGE_NOTIFICATION_PAGE__EXECUTE_ACTION = "GenericUser_ManageNotificationPage_ExecuteAction";
+
+        public const string GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__GO_TO = "GenericUser_ViewSingleNotificationPage";
+        public const string GENERIC_USER__VIEW_SINGLE_NOTIFICATION_PAGE__EXECUTE_ACTION = "GenericUser_ViewSingleNotificationPage_ExecuteAction";
 
 
     }

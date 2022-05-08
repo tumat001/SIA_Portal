@@ -4,7 +4,19 @@
     ViewBag.Title = "Admin_CreateEditAdminAccountPage";
     Layout = "~/Views/Shared/Shared_NavBar.cshtml";
 }
+<!--
+<style>
+    .rightAlignDiv {
+        float: left;
+    }
 
+    .rightAlignDiv:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+    -->
 
 <head>
     <meta charset="UTF-8" />
@@ -27,19 +39,37 @@
         $(document).ready(function () {
 
             $('#AddCatToCurrCats').click(function () {
-                $("#CategoryNameList > option:selected").each(function () {
-                    $(this).appendTo("#InputCategoryNameList");
+                $("#DivisionNameList > option:selected").each(function () {
+                    $(this).appendTo("#InputAccountDivisionNameList");
                 });
             });
 
             $('#DeleteCatFromCurrCats').click(function () {
-                $("#InputCategoryNameList > option:selected").each(function () {
-                    $(this).remove().appendTo("#CategoryNameList");
+                $("#InputAccountDivisionNameList > option:selected").each(function () {
+                    $(this).remove().appendTo("#DivisionNameList");
                 });
 
 
-                $("#InputCategoryNameList option").prop("selected", true);
+                $("#InputAccountDivisionNameList option").prop("selected", true);
             });
+
+            //
+
+            $('#AddRespoToCurrRespo').click(function () {
+                $("#ToDivisionResponsibilityNameList > option:selected").each(function () {
+                    $(this).appendTo("#InputAccountToDivisionResponibilityNameList");
+                });
+            });
+
+            $('#DeleteRespoFromCurrRespo').click(function () {
+                $("#InputAccountToDivisionResponibilityNameList > option:selected").each(function () {
+                    $(this).remove().appendTo("#ToDivisionResponsibilityNameList");
+                });
+
+
+                $("#InputAccountToDivisionResponibilityNameList option").prop("selected", true);
+            });
+
         })
     </script>
 </head>
@@ -88,11 +118,11 @@
 
             <fieldset class="announcement-content">
                 <legend>Account Division</legend>
-                <div class="text-content-wrapper">
+                <div class="text-content-wrapper" style="display: flex; justify-content: space-around">
                     <div class="col-4">
                         <div class="row">
                             <p>Available Categories:</p>
-                            @Html.ListBoxFor(m => m.CategoryNameList, new SelectList(Model.CategoryNameList), new { @id = "CategoryNameList" })
+                            @Html.ListBoxFor(m => m.DivisionNameList, new SelectList(Model.DivisionNameList), new { @id = "DivisionNameList" })
 
                             <br /><br />
                             <button type="button" name="executeCategoryAction" id="AddCatToCurrCats" value="AddCatToCurrCats">Add Selected Category</button>
@@ -103,7 +133,7 @@
                     <div class="col-4">
                         <div class="row">
                             <p>Current Categories:</p>
-                            @Html.ListBoxFor(m => m.InputCategoryNameList, new SelectList(Model.InputCategoryNameList), new { @id = "InputCategoryNameList" })
+                            @Html.ListBoxFor(m => m.InputAccountDivisionNameList, new SelectList(Model.InputAccountDivisionNameList), new { @id = "InputAccountDivisionNameList" })
 
                             <br /><br />
                             <button type="button" name="executeCategoryAction" id="DeleteCatFromCurrCats" value="DeleteCatFromCurrCats">Remove Selected Category</button>
@@ -111,6 +141,42 @@
                     </div>
                 </div>
             </fieldset>
+
+
+            @if (Model.IfAccountHasPermission(PermissionConstants.MANAGE_DIVISIONAL_RESPONSIBILITIES))
+            {
+                <fieldset class="announcement-content">
+                    <legend>Account Divisional Responsibilities</legend>
+                    <div class="text-content-wrapper" style="display: flex; justify-content: space-around">
+                        <div class="col-4">
+                            <div class="row">
+                                <p>Available Responsibilities:</p>
+                                @Html.ListBoxFor(m => m.ToDivisionResponsibilityNameList, new SelectList(Model.ToDivisionResponsibilityNameList), new { @id = "ToDivisionResponsibilityNameList" })
+
+                                <br /><br />
+                                <button type="button" name="executeCategoryAction" id="AddRespoToCurrRespo" value="AddRespoToCurrRespo">Add Selected Responsibility</button>
+
+                            </div>
+                        </div>
+                        <br /><br /><br />
+                        <div class="col-4">
+                            <div class="row">
+                                <p>Current Responsibilities:</p>
+                                @Html.ListBoxFor(m => m.InputAccountToDivisionResponibilityNameList, new SelectList(Model.InputAccountToDivisionResponibilityNameList), new { @id = "InputAccountToDivisionResponibilityNameList" })
+
+                                <br /><br />
+                                <button type="button" name="executeCategoryAction" id="DeleteRespoFromCurrRespo" value="DeleteRespoFromCurrRespo">Remove Selected Resposibility</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            }
+            else
+            {
+                @Html.HiddenFor(m => m.ToDivisionResponsibilityNameList)
+                @Html.HiddenFor(m => m.InputAccountToDivisionResponibilityNameList)
+            }
+
 
             <fieldset class="announcement-content">
                 <legend>Account Password</legend>

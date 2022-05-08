@@ -11,9 +11,9 @@ namespace SIA_PORTAL_UnitTest.DataSetter
 
         private static PortalAccountDivisionCategoryAccessor portalAccountDivisionAccessor;
 
-        private const string DIVISION_FACULTY = "Faculty";
-        private const string DIVISION_HR = "Human Resource";
-        private const string DIVISION_FRONT_DESK = "Front Desk";
+        public const string DIVISION_FACULTY = "Faculty";
+        public const string DIVISION_HR = "Human Resource";
+        public const string DIVISION_FRONT_DESK = "Front Desk";
         
 
         [ClassInitialize]
@@ -25,13 +25,13 @@ namespace SIA_PORTAL_UnitTest.DataSetter
         [TestMethod]
         public void Clean_ResetOf_PositionCategory()
         {
-            Clear_PositionCategory();
-            Add_PositionCategory();
+            DeleteAll_PositionCategory();
+            Create_PositionCategory();
         }
 
 
         [TestMethod]
-        public void Add_PositionCategory()
+        public void Create_PositionCategory()
         {
 
             var cat01 = new Category.Builder();
@@ -52,7 +52,7 @@ namespace SIA_PORTAL_UnitTest.DataSetter
         }
 
         [TestMethod]
-        public void Clear_PositionCategory()
+        public void DeleteAll_PositionCategory()
         {
 
             portalAccountDivisionAccessor.CategoryDatabaseManagerHelper.DeleteAllCategories();
